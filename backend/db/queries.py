@@ -150,6 +150,23 @@ def get_risk_scores_by_time_slot(time_slot: str) -> list:
     return response.data
 
 
+def get_all_risk_scores() -> list:
+    """Ambil semua baris risk_scores, urut berdasarkan area lalu time_slot.
+    Dipakai untuk verifikasi manual (mis. cek sebaran heatmap)."""
+    try:
+        response = (
+            supabase.table("risk_scores")
+            .select("*")
+            .order("area")
+            .order("time_slot")
+            .execute()
+        )
+    except Exception as exc:
+        raise DBQueryError(f"Gagal ambil semua risk scores: {exc}") from exc
+
+    return response.data
+
+
 def upsert_risk_score(area: str, time_slot: str, score: float) -> dict:
     """Simpan/update skor risiko untuk satu area + time_slot di tabel
     risk_scores. Primary key tabel ini adalah (area, time_slot), jadi
