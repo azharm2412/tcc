@@ -58,6 +58,55 @@ def get_report_by_id(report_id: str) -> Optional[dict]:
     return response.data[0]
 
 
+def get_recent_reports(since: datetime) -> list:
+    """Ambil reports yang dibuat (created_at) sejak `since`. Dipakai oleh
+    Verification Agent untuk heuristik clustering — lihat catatan di
+    backend/agents/verification.py soal keterbatasannya."""
+    try:
+        response = (
+            supabase.table("reports")
+            .select("id, location, reported_at, status, created_at")
+            .gte("created_at", since.isoformat())
+            .execute()
+        )
+    except Exception as exc:
+        raise DBQueryError(f"Gagal ambil recent reports sejak {since.isoformat()}: {exc}") from exc
+
+    return response.data
+
+
+def update_report_verification(report_id: str, status: str, location: Optional[str] = None) -> dict:
+    """Update hasil verifikasi ke tabel reports.
+
+    CATATAN PENTING: docs/contracts.md untuk tabel `reports` TIDAK
+    mendefinisikan kolom `time_period`, `incident_type`, atau `cluster_id`
+    (kolom itu cuma ada di response API /agents/verify, bukan di skema
+    tabel). Jadi fungsi ini SENGAJA cuma update `location` dan `status` —
+    field lain hasil ekstraksi cuma dikembalikan lewat response API, tidak
+    dipersist. Kalau perlu disimpan permanen, itu perubahan skema yang wajib
+    didiskusikan tim dulu (CLAUDE.md aturan #1-2), bukan ditambahkan diam-diam
+    di sini.
+    """
+    update_fields = {"status": status}
+    if location:
+        update_fields["location"] = location
+
+    try:
+        response = (
+            supabase.table("reports")
+            .update(update_fields)
+            .eq("id", report_id)
+            .execute()
+        )
+    except Exception as exc:
+        raise DBQueryError(f"Gagal update verifikasi report id={report_id!r}: {exc}") from exc
+
+    if not response.data:
+        raise DBQueryError(f"Update report id={report_id!r} tidak menemukan baris (0 rows affected)")
+
+    return response.data[0]
+
+
 def get_seed_data() -> list:
     """Ambil semua baris dari tabel seed_data."""
     try:

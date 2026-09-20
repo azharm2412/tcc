@@ -7,10 +7,12 @@ from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, field_validator
 
 from backend.agents.risk_prediction import calculate_risk_score
+from backend.agents.verification import VerificationError, verify_report
 from backend.db.queries import (
     DBQueryError,
     get_report_by_id,
     insert_report,
+    update_report_verification,
     upsert_risk_score,
 )
 
@@ -33,6 +35,11 @@ class ReportCreate(BaseModel):
 class ReportCreateResponse(BaseModel):
     id: UUID
     status: str
+
+
+class VerifyRequest(BaseModel):
+    report_id: str
+    text: str
 
 
 @app.get("/agents/risk")
@@ -81,3 +88,23 @@ def get_report(report_id: UUID):
         raise HTTPException(status_code=404, detail="Report tidak ditemukan")
 
     return row
+
+
+@app.post("/agents/verify")
+def verify_report_endpoint(payload: VerifyRequest):
+    """Sesuai docs/contracts.md — Verification Agent. 503 kalau API AI
+    gagal/timeout — jangan biarkan request menggantung."""
+    try:
+        result = verify_report(payload.report_id, payload.text)
+    except VerificationError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+    new_status = "terverifikasi" if result["cluster_id"] else "menunggu_verifikasi"
+    try:
+        update_report_verification(
+            payload.report_id, status=new_status, location=result["location"] or None
+        )
+    except DBQueryError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    return result
