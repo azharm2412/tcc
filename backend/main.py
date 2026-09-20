@@ -7,6 +7,7 @@ from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, field_validator
 
 from backend.agents.risk_prediction import calculate_risk_score
+from backend.agents.route_advisor import RouteAdvisorError, check_route
 from backend.agents.verification import VerificationError, verify_report
 from backend.db.queries import (
     DBQueryError,
@@ -42,6 +43,12 @@ class VerifyRequest(BaseModel):
     text: str
 
 
+class RouteCheckRequest(BaseModel):
+    origin: str
+    destination: str
+    departure_time: str
+
+
 @app.get("/agents/risk")
 def get_risk(area: str, time_slot: str):
     """Sesuai docs/contracts.md — Risk Prediction Agent.
@@ -55,6 +62,17 @@ def get_risk(area: str, time_slot: str):
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
     return result
+
+
+@app.post("/agents/route-check")
+def route_check_endpoint(payload: RouteCheckRequest):
+    """Sesuai docs/contracts.md — Safe Route Advisor."""
+    try:
+        return check_route(payload.origin, payload.destination, payload.departure_time)
+    except RouteAdvisorError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except DBQueryError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
 @app.post("/reports", response_model=ReportCreateResponse, status_code=status.HTTP_201_CREATED)

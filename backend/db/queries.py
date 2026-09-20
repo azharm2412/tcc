@@ -139,6 +139,17 @@ def get_risk_score(area: str, time_slot: str) -> Optional[dict]:
     return response.data[0]
 
 
+def get_risk_scores_by_time_slot(time_slot: str) -> list:
+    """Ambil semua baris risk_scores untuk satu time_slot. Dipakai Safe
+    Route Advisor untuk cek area berisiko di sepanjang rute."""
+    try:
+        response = supabase.table("risk_scores").select("*").eq("time_slot", time_slot).execute()
+    except Exception as exc:
+        raise DBQueryError(f"Gagal ambil risk scores untuk time_slot={time_slot!r}: {exc}") from exc
+
+    return response.data
+
+
 def upsert_risk_score(area: str, time_slot: str, score: float) -> dict:
     """Simpan/update skor risiko untuk satu area + time_slot di tabel
     risk_scores. Primary key tabel ini adalah (area, time_slot), jadi
