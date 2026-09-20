@@ -3,7 +3,7 @@
 # 🛡️ Gardu
 **Sistem Kesadaran Komunitas dan Rute Aman Warga terhadap Kejahatan Jalanan (Klitih) di Yogyakarta**
 
-[![Vercel](https://img.shields.io/badge/Vercel-Visit%20Live%20Site-A5B4FC?style=for-the-badge&logo=vercel&logoColor=white)](#)
+[![Vercel](https://img.shields.io/badge/Vercel-Visit%20Live%20Site-A5B4FC?style=for-the-badge&logo=vercel&logoColor=white)](https://gardu-tcc.vercel.app/)
 
 <p align="center">
   <a href="#gambaran-umum">Gambaran Umum</a> •
