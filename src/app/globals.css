@@ -90,3 +90,18 @@ body {
 .gardu-popup .maplibregl-popup-tip {
   border-top-color: #0f1713;
 }
+
+.marquee-track {
+  animation: marquee 25s linear infinite;
+  will-change: transform;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}

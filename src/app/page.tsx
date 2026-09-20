@@ -234,9 +234,13 @@ export default async function LandingPage() {
 
       {/* MARQUEE */}
       <div className="overflow-hidden border-y border-line bg-panel/40 py-4">
-        <div className="flex w-max animate-marquee gap-10 whitespace-nowrap text-sm uppercase tracking-[0.3em] text-zinc-600">
-          {Array.from({ length: 2 }).map((_, dup) => (
-            <div key={dup} className="flex gap-10">
+        <div className="marquee-track flex w-max whitespace-nowrap">
+          {[0, 1].map((dup) => (
+            <div
+              key={dup}
+              className="flex shrink-0 items-center gap-10 pr-10"
+              aria-hidden={dup === 1}
+            >
               {[
                 'Pencegahan',
                 'Kesadaran Situasional',
@@ -246,9 +250,12 @@ export default async function LandingPage() {
                 'Komunitas',
                 'Bukan Penghakiman',
               ].map((t) => (
-                <span key={t} className="flex items-center gap-10">
+                <span
+                  key={t}
+                  className="flex shrink-0 items-center gap-10 text-sm uppercase tracking-[0.3em] text-zinc-600"
+                >
                   {t}
-                  <span className="text-emerald-500/60">-</span>
+                  <span className="text-emerald-500/60">—</span>
                 </span>
               ))}
             </div>

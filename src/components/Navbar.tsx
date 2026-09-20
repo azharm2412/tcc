@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const LINKS = [
-  { href: '/', label: 'Beranda' },
   { href: '/lapor', label: 'Lapor' },
   { href: '/peta', label: 'Peta Kerawanan' },
   { href: '/rute', label: 'Cek Rute' },
@@ -66,7 +65,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const onScroll = () => {
-      setScrolled(window.scrollY > 40);
+      setScrolled(window.scrollY > 80);
     };
 
     onScroll();
@@ -90,8 +89,8 @@ export default function Navbar() {
       }}
       transition={{
         type: 'spring',
-        stiffness: 260,
-        damping: 28,
+        stiffness: 200,
+        damping: 40,
         mass: 0.8,
       }}
       className={`

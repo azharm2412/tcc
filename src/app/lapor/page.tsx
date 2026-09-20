@@ -116,7 +116,9 @@ export default function LaporPage() {
                     Terima kasih. Laporanmu masuk antrean verifikasi AI dan akan
                     diklasterkan dengan laporan lain di sekitar lokasi & waktu yang sama.
                   </p>
-                  <button onClick={reset} className="btn-ghost mt-6">Kirim laporan lain</button>
+                  <button onClick={reset} className="btn-ghost mt-6 cursor-pointer">
+                    Kirim laporan lain
+                  </button>
                 </motion.div>
               ) : (
                 <motion.form
@@ -183,7 +185,7 @@ export default function LaporPage() {
                     </motion.p>
                   )}
 
-                  <button type="submit" disabled={phase === 'sending'} className="btn-primary w-full disabled:opacity-60">
+                  <button type="submit" disabled={phase === 'sending'} className="btn-primary w-full disabled:opacity-60 cursor-pointer">
                     {phase === 'sending' ? (
                       <>
                         <motion.span

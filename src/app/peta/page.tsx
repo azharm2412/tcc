@@ -578,7 +578,7 @@ export default function PetaPage() {
                             {i + 1}
                           </span>
 
-                          <span className="text-sm text-zinc-300">
+                          <span className="text-xs text-zinc-300">
                             {s.area_name}
                           </span>
 
