@@ -13,17 +13,47 @@ class DBQueryError(Exception):
     """Dilempar saat query ke Supabase gagal, dengan pesan yang jelas."""
 
 
+# Kolom tabel reports yang boleh diisi dari luar, sesuai docs/contracts.md.
+# CLAUDE.md aturan #4: dilarang menyimpan identitas pelapor (nama, no HP,
+# akun medsos) — field apa pun di luar daftar ini dibuang, bukan disimpan.
+_REPORT_ALLOWED_FIELDS = {
+    "description",
+    "location",
+    "lat",
+    "lng",
+    "reported_at",
+    "status",
+    "embedding",  # diisi Verification Agent, bukan endpoint publik
+}
+
+
 def insert_report(data: dict) -> dict:
-    """Insert satu baris ke tabel reports. `data` mengikuti kolom di
-    docs/contracts.md (mis. description, location, lat, lng, reported_at).
-    Jangan sertakan identitas pelapor (nama, no HP, akun medsos)."""
+    """Insert satu baris ke tabel reports. Hanya kolom yang ada di
+    docs/contracts.md yang disimpan; field lain (mis. nama, no HP, akun
+    medsos) otomatis dibuang, tidak pernah masuk ke database."""
+    safe_data = {k: v for k, v in data.items() if k in _REPORT_ALLOWED_FIELDS}
+
     try:
-        response = supabase.table("reports").insert(data).execute()
+        response = supabase.table("reports").insert(safe_data).execute()
     except Exception as exc:
         raise DBQueryError(f"Gagal insert ke tabel reports: {exc}") from exc
 
     if not response.data:
         raise DBQueryError(f"Insert ke tabel reports tidak mengembalikan data: {response}")
+
+    return response.data[0]
+
+
+def get_report_by_id(report_id: str) -> Optional[dict]:
+    """Ambil satu laporan dari tabel reports berdasarkan id.
+    Return None kalau id tidak ditemukan."""
+    try:
+        response = supabase.table("reports").select("*").eq("id", report_id).execute()
+    except Exception as exc:
+        raise DBQueryError(f"Gagal ambil report id={report_id!r}: {exc}") from exc
+
+    if not response.data:
+        return None
 
     return response.data[0]
 
