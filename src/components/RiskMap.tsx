@@ -1,293 +1,226 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import dynamic from 'next/dynamic';
-import * as maplibregl from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
+import { useEffect, useRef } from 'react';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet.heat';
+
 import { RiskPoint } from '@/lib/types';
 
-const STYLE_URL =
-  'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
-
-type RiskProperties = {
-  score: number;
-  area: string;
+type HeatLayer = L.Layer & {
+  setLatLngs: (
+    latlngs: Array<[number, number, number]>,
+  ) => void;
 };
 
-type RiskFeatureCollection = {
-  type: 'FeatureCollection';
-  features: Array<{
-    type: 'Feature';
-    properties: RiskProperties;
-    geometry: {
-      type: 'Point';
-      coordinates: [number, number];
-    };
-  }>;
+type LeafletWithHeat = typeof L & {
+  heatLayer: (
+    latlngs: Array<[number, number, number]>,
+    options?: {
+      radius?: number;
+      blur?: number;
+      maxZoom?: number;
+      max?: number;
+      gradient?: Record<number, string>;
+    },
+  ) => HeatLayer;
 };
 
-function toGeoJSON(points: RiskPoint[]): RiskFeatureCollection {
-  return {
-    type: 'FeatureCollection',
-    features: points.map((p) => ({
-      type: 'Feature',
-      properties: {
-        score: p.score,
-        area: p.area_name,
-      },
-      geometry: {
-        type: 'Point',
-        coordinates: [p.lng, p.lat],
-      },
-    })),
-  };
-}
-
-function MapInner({ points }: { points: RiskPoint[] }) {
+export default function RiskMap({
+  points,
+}: {
+  points: RiskPoint[];
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<maplibregl.Map | null>(null);
-  const [failed, setFailed] = useState(false);
+  const mapRef = useRef<L.Map | null>(null);
+  const heatLayerRef = useRef<HeatLayer | null>(null);
+
+  // ==========================================
+  // INIT MAP
+  // ==========================================
 
   useEffect(() => {
-    if (!containerRef.current || mapRef.current) return;
+    const container = containerRef.current;
 
-    let map: maplibregl.Map | null = null;
+    if (!container) return;
 
-    try {
-      map = new maplibregl.Map({
-        container: containerRef.current,
-        style: STYLE_URL,
-        center: [110.3695, -7.7956],
-        zoom: 10.4,
-        attributionControl: {
-          compact: true,
-        },
-      });
+    if (mapRef.current) return;
 
-      map.addControl(
-        new maplibregl.NavigationControl({
-          visualizePitch: true,
-        }),
-        'bottom-right',
-      );
+    const map = L.map(container, {
+      center: [-7.7956, 110.3695],
+      zoom: 10,
+      zoomControl: true,
+    });
 
-      mapRef.current = map;
+    L.tileLayer(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {
+        maxZoom: 19,
+        attribution:
+          '&copy; OpenStreetMap contributors',
+      },
+    ).addTo(map);
 
-      map.on('error', () => {
-        setFailed(true);
-      });
+    mapRef.current = map;
 
-      map.on('load', () => {
-        if (!map) return;
-
-        const activeMap = map;
-
-        map.addSource('risk', {
-          type: 'geojson',
-          data: toGeoJSON(points),
-        });
-
-        map.addLayer({
-          id: 'risk-heat',
-          type: 'heatmap',
-          source: 'risk',
-          maxzoom: 14,
-          paint: {
-            'heatmap-weight': [
-              'interpolate',
-              ['linear'],
-              ['get', 'score'],
-              0,
-              0,
-              100,
-              1,
-            ],
-            'heatmap-intensity': [
-              'interpolate',
-              ['linear'],
-              ['zoom'],
-              10,
-              1,
-              14,
-              2.4,
-            ],
-            'heatmap-radius': [
-              'interpolate',
-              ['linear'],
-              ['zoom'],
-              10,
-              22,
-              14,
-              46,
-            ],
-            'heatmap-color': [
-              'interpolate',
-              ['linear'],
-              ['heatmap-density'],
-              0,
-              'rgba(16, 185, 129, 0)',
-              0.3,
-              'rgba(251, 191, 36, 0.45)',
-              0.65,
-              'rgba(249, 115, 22, 0.65)',
-              1,
-              'rgba(239, 68, 68, 0.85)',
-            ],
-            'heatmap-opacity': 0.9,
-          },
-        });
-
-        map.addLayer({
-          id: 'risk-point',
-          type: 'circle',
-          source: 'risk',
-          minzoom: 10.5,
-          paint: {
-            'circle-radius': 7,
-            'circle-color': [
-              'interpolate',
-              ['linear'],
-              ['get', 'score'],
-              0,
-              '#34d399',
-              40,
-              '#fbbf24',
-              70,
-              '#ef4444',
-            ],
-            'circle-opacity': 0.85,
-            'circle-stroke-width': 1.5,
-            'circle-stroke-color': 'rgba(255,255,255,0.35)',
-          },
-        });
-
-        const popup = new maplibregl.Popup({
-          closeButton: false,
-          closeOnClick: false,
-          offset: 14,
-          className: 'gardu-popup',
-        });
-
-        map.on(
-          'mousemove',
-          'risk-point',
-          (
-            e: maplibregl.MapMouseEvent & {
-              features?: maplibregl.MapGeoJSONFeature[];
-            },
-          ) => {
-            const feature = e.features?.[0];
-
-            if (!feature) return;
-
-            const geometry = feature.geometry;
-
-            if (geometry.type !== 'Point') return;
-
-            const coords = geometry.coordinates as [number, number];
-
-            popup
-              .setLngLat(coords)
-              .setHTML(
-                `<div style="font-family:system-ui">
-                  <div style="font-weight:700;color:#e4e4e7">
-                    ${feature.properties?.area ?? ''}
-                  </div>
-                  <div style="color:#a1a1aa;font-size:12px">
-                    Skor kerawanan:
-                    <b style="color:#fbbf24">
-                      ${Number(feature.properties?.score).toFixed(1)}
-                    </b>
-                    / 100
-                  </div>
-                </div>`,
-              )
-              .addTo(activeMap);
-          },
-        );
-
-        map.on('mouseleave', 'risk-point', () => {
-          popup.remove();
-        });
-      });
-    } catch {
-      setTimeout(() => setFailed(true), 0);
-    }
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 300);
 
     return () => {
-      if (map) {
-        map.remove();
-      }
+      map.remove();
 
       mapRef.current = null;
+      heatLayerRef.current = null;
     };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // ==========================================
+  // UPDATE HEATMAP
+  // ==========================================
+
   useEffect(() => {
-    const source = mapRef.current?.getSource(
-      'risk',
-    ) as maplibregl.GeoJSONSource | undefined;
+    const map = mapRef.current;
 
-    if (source) {
-      source.setData(toGeoJSON(points));
+    if (!map) return;
+
+    // --------------------------------------
+    // Hapus heatmap sebelumnya
+    // --------------------------------------
+
+    if (heatLayerRef.current) {
+      map.removeLayer(heatLayerRef.current);
+      heatLayerRef.current = null;
     }
-  }, [points]);
 
-  if (failed) {
-    return (
-      <div className="overflow-hidden rounded-3xl border border-line">
-        <div className="border-b border-line bg-panel px-4 py-3 text-xs text-zinc-500">
-          Peta tidak dapat dimuat — menampilkan data dalam bentuk tabel.
-        </div>
+    // --------------------------------------
+    // Validasi data
+    // --------------------------------------
 
-        <table className="w-full text-sm">
-          <thead className="bg-panel text-left text-zinc-400">
-            <tr>
-              <th className="px-4 py-3">Area</th>
-              <th className="px-4 py-3">Skor</th>
-              <th className="px-4 py-3">Level</th>
-            </tr>
-          </thead>
+    if (!points || points.length === 0) {
+      return;
+    }
 
-          <tbody>
-            {[...points]
-              .sort((a, b) => b.score - a.score)
-              .map((p) => (
-                <tr
-                  key={p.area_name}
-                  className="border-t border-line"
-                >
-                  <td className="px-4 py-3 text-zinc-200">
-                    {p.area_name}
-                  </td>
-
-                  <td className="px-4 py-3 font-mono text-amber-300">
-                    {p.score.toFixed(1)}
-                  </td>
-
-                  <td className="px-4 py-3 capitalize text-zinc-400">
-                    {p.level}
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
+    const validPoints = points.filter(
+      (point) =>
+        Number.isFinite(point.lat) &&
+        Number.isFinite(point.lng) &&
+        Number.isFinite(point.score),
     );
-  }
+
+    if (validPoints.length === 0) {
+      return;
+    }
+
+    // ======================================
+    // NORMALISASI SCORE
+    // 0   = risiko rendah
+    // 100 = risiko tinggi
+    // ======================================
+
+    const heatData = validPoints.map(
+      (point) => [
+        point.lat,
+        point.lng,
+        Math.max(
+          0,
+          Math.min(1, point.score / 100),
+        ),
+      ] as [number, number, number],
+    );
+
+    // ======================================
+    // CREATE HEATMAP
+    // ======================================
+
+    const leafletWithHeat = L as LeafletWithHeat;
+
+    const heatLayer =
+      leafletWithHeat.heatLayer(
+        heatData,
+        {
+          // Semakin besar = area panas semakin luas
+          radius: 80,
+
+          // Semakin besar = transisi semakin halus
+          blur: 50,
+
+          // Heatmap mengikuti zoom
+          maxZoom: 10,
+
+          // Score maksimum
+          max: 1,
+
+          // =================================
+          // GRADIENT RISIKO
+          // =================================
+          gradient: {
+            0.00: '#22c55e', // Hijau
+            0.20: '#84cc16', // Hijau-kuning
+            0.40: '#facc15', // Kuning
+            0.60: '#fb923c', // Oranye
+            0.75: '#ef4444', // Merah
+            0.90: '#dc2626', // Merah tua
+            1.00: '#7f1d1d', // Sangat tinggi
+          },
+        },
+      );
+
+    heatLayer.addTo(map);
+
+    heatLayerRef.current = heatLayer;
+
+    // ======================================
+    // FOCUS MAP
+    // ======================================
+
+    if (validPoints.length === 1) {
+      const point = validPoints[0];
+
+      map.setView(
+        [point.lat, point.lng],
+        13,
+      );
+    } else {
+      const bounds = L.latLngBounds(
+        validPoints.map(
+          (point) =>
+            [
+              point.lat,
+              point.lng,
+            ] as [number, number],
+        ),
+      );
+
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, {
+          padding: [60, 60],
+          maxZoom: 13,
+        });
+      }
+    }
+
+    // ======================================
+    // FIX MAP SIZE
+    // ======================================
+
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 100);
+  }, [points]);
 
   return (
     <div
       ref={containerRef}
-      className="h-[540px] w-full overflow-hidden rounded-3xl border border-line shadow-glow"
+      className="
+        h-[540px]
+        w-full
+        overflow-hidden
+        rounded-3xl
+        border
+        border-line
+        shadow-glow
+      "
     />
   );
 }
-
-const RiskMap = dynamic(() => Promise.resolve(MapInner), {
-  ssr: false,
-});
-
-export default RiskMap;

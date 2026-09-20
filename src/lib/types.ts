@@ -16,14 +16,13 @@ export const LEVEL_STYLE: Record<
   rawan:   { label: 'Rawan',   text: 'text-red-300',     bg: 'bg-red-400/10',     ring: 'ring-red-400/30',     hex: '#f87171' },
 };
 
-export interface RiskPoint {
+export type RiskPoint = {
   area_name: string;
   lat: number;
   lng: number;
-  hour_of_day: number;
   score: number;
-  level: RiskLevel;
-}
+  level: 'aman' | 'waspada' | 'rawan';
+};
 
 export interface Report {
   id: string;
