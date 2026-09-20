@@ -9,6 +9,7 @@
   <a href="#gambaran-umum">Gambaran Umum</a> •
   <a href="#fitur-utama">Fitur Utama</a> •
   <a href="#arsitektur-ai-agent">Arsitektur AI</a> •
+  <a href="#api-endpoints">API Endpoints</a> •
   <a href="#teknologi">Teknologi</a> •
   <a href="#cara-menjalankan">Instalasi</a> •
   <a href="#struktur-direktori">Struktur Folder</a> •
@@ -95,6 +96,64 @@ Detail lengkap kebutuhan fungsional dan non-fungsional ada di `docs/` (SRS dan d
 * Backend: Railway / Render
 * Database & Vector Store: Supabase
 
+---
+## <a id="api-endpoints"></a>🔌 API Endpoints
+ 
+Setelah backend berjalan di `http://127.0.0.1:8000`, dokumentasi interaktif tersedia di [`/docs`](http://127.0.0.1:8000/docs) (Swagger UI) — bisa langsung dicoba dari browser. Ringkasan endpoint yang tersedia:
+ 
+| Method | Endpoint | Deskripsi |
+| :--- | :--- | :--- |
+| `POST` | `/reports` | Kirim laporan kejadian baru (anonim, tanpa data identitas). |
+| `GET` | `/reports/{report_id}` | Ambil satu laporan berdasarkan ID. |
+| `POST` | `/agents/verify` | Verification Agent — ekstrak lokasi/waktu/jenis kejadian dari teks laporan bebas via Gemini API, deteksi klaster laporan serupa. |
+| `GET` | `/agents/risk` | Risk Prediction Agent — ambil skor kerawanan (0-100) untuk kombinasi `area` dan `time_slot` tertentu. |
+| `POST` | `/agents/route-check` | Safe Route Advisor — cek status risiko (`aman` / `waspada` / `berisiko_tinggi`) untuk rute asal-tujuan pada waktu tertentu. |
+ 
+<details>
+<summary><b>Contoh Request &amp; Response</b></summary>
+**`POST /reports`**
+```json
+// Request
+{
+  "description": "Ada gerombolan remaja mencurigakan bawa senjata tajam",
+  "location": "Jalan Kaliurang km 5",
+  "reported_at": "2026-09-20T02:00:00+07:00"
+}
+// Response (201)
+{
+  "id": "uuid-laporan",
+  "status": "menunggu_verifikasi"
+}
+```
+ 
+**`GET /agents/risk?area=Bantul&time_slot=dini_hari`**
+```json
+// Response
+{
+  "area": "Bantul",
+  "time_slot": "dini_hari",
+  "score": 80
+}
+```
+ 
+**`POST /agents/route-check`**
+```json
+// Request
+{
+  "origin": "Jalan Kaliurang",
+  "destination": "Malioboro",
+  "departure_time": "2026-09-20T02:00:00+07:00"
+}
+// Response
+{
+  "risk_level": "waspada",
+  "avoid_areas": ["Bantul", "Sleman"]
+}
+```
+ 
+</details>
+Detail lengkap format request/response dan skema data ada di [`docs/contracts.md`](docs/contracts.md).
+ 
 ---
 
 ## <a id="cara-menjalankan"></a>⚙️ Cara Menjalankan
