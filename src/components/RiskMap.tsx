@@ -140,7 +140,7 @@ export default function RiskMap({
         heatData,
         {
           // Semakin besar = area panas semakin luas
-          radius: 80,
+          radius: 70,
 
           // Semakin besar = transisi semakin halus
           blur: 50,
@@ -155,13 +155,14 @@ export default function RiskMap({
           // GRADIENT RISIKO
           // =================================
           gradient: {
-            0.00: '#22c55e', // Hijau
-            0.20: '#84cc16', // Hijau-kuning
-            0.40: '#facc15', // Kuning
-            0.60: '#fb923c', // Oranye
-            0.75: '#ef4444', // Merah
-            0.90: '#dc2626', // Merah tua
-            1.00: '#7f1d1d', // Sangat tinggi
+            0.00: '#0e682f',
+            0.10: '#089c3e',
+            0.20: '#8ad118',
+            0.40: '#facc15',
+            0.60: '#fb923c',
+            0.80: '#ef4444',
+            0.90: '#dc2626',
+            1.00: '#7f1d1d',
           },
         },
       );
