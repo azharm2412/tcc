@@ -4,16 +4,74 @@ export const YOGYA_CENTER = { lat: -7.7956, lng: 110.3695 };
 
 // Gazetteer sederhana area DIY (tanpa API geocoding)
 export const PLACES: Place[] = [
-  { name: 'Malioboro & Tugu',            lat: -7.7927, lng: 110.3658 },
-  { name: 'Jalan Kaliurang (Sekip/UGM)', lat: -7.7580, lng: 110.4080 },
-  { name: 'Ring Road Utara (Mlati)',     lat: -7.7490, lng: 110.3600 },
-  { name: 'Ring Road Timur (Depok)',     lat: -7.7900, lng: 110.4300 },
-  { name: 'Gamping & Ambarketawang',     lat: -7.7900, lng: 110.3200 },
-  { name: 'Depok & Berbah',              lat: -7.7600, lng: 110.4300 },
-  { name: 'Jalan Wonosari (Piyungan)',   lat: -7.8400, lng: 110.4600 },
-  { name: 'Kotagede',                    lat: -7.8300, lng: 110.4000 },
-  { name: 'Sleman Kota & Tempel',        lat: -7.7100, lng: 110.3300 },
-  { name: 'Wates & Kulon Progo',         lat: -7.8600, lng: 110.1600 },
-  { name: 'Bantul Kota',                 lat: -7.8880, lng: 110.3280 },
-  { name: 'Kaliurang Utara (Kopeng)',    lat: -7.6800, lng: 110.4200 },
+  {
+    name: 'Bantul',
+    lat: -7.8880,
+    lng: 110.3280,
+  },
+  {
+    name: 'Godean',
+    lat: -7.7690,
+    lng: 110.2930,
+  },
+  {
+    name: 'Gondokusuman',
+    lat: -7.7820,
+    lng: 110.3830,
+  },
+  {
+    name: 'Jetis',
+    lat: -7.7820,
+    lng: 110.3650,
+  },
+  {
+    name: 'Kota Yogyakarta',
+    lat: -7.7956,
+    lng: 110.3695,
+  },
+  {
+    name: 'Kotagede',
+    lat: -7.8288,
+    lng: 110.3989,
+  },
+  {
+    name: 'Ngaglik',
+    lat: -7.7240,
+    lng: 110.4210,
+  },
+  {
+    name: 'Pakualaman',
+    lat: -7.7990,
+    lng: 110.3730,
+  },
+  {
+    name: 'Pandak',
+    lat: -7.9330,
+    lng: 110.3130,
+  },
+  {
+    name: 'Sanden',
+    lat: -7.9950,
+    lng: 110.3370,
+  },
+  {
+    name: 'Seyegan',
+    lat: -7.7210,
+    lng: 110.3190,
+  },
+  {
+    name: 'Sleman',
+    lat: -7.7150,
+    lng: 110.3400,
+  },
+  {
+    name: 'Tegalrejo',
+    lat: -7.7850,
+    lng: 110.3540,
+  },
+  {
+    name: 'Umbulharjo',
+    lat: -7.8100,
+    lng: 110.3850,
+  },
 ];
