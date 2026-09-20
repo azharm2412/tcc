@@ -3,6 +3,7 @@
 Skema kolom mengikuti docs/contracts.md — jangan ubah tanpa update kontrak.
 """
 
+from datetime import datetime, timezone
 from typing import Optional
 
 from backend.db.supabase_client import supabase
@@ -55,5 +56,33 @@ def get_risk_score(area: str, time_slot: str) -> Optional[dict]:
 
     if not response.data:
         return None
+
+    return response.data[0]
+
+
+def upsert_risk_score(area: str, time_slot: str, score: float) -> dict:
+    """Simpan/update skor risiko untuk satu area + time_slot di tabel
+    risk_scores. Primary key tabel ini adalah (area, time_slot), jadi
+    dipanggil ulang untuk area/time_slot yang sama akan meng-update baris
+    yang sudah ada, bukan bikin duplikat."""
+    row = {
+        "area": area,
+        "time_slot": time_slot,
+        "score": score,
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }
+    try:
+        response = (
+            supabase.table("risk_scores")
+            .upsert(row, on_conflict="area,time_slot")
+            .execute()
+        )
+    except Exception as exc:
+        raise DBQueryError(
+            f"Gagal upsert risk score untuk area={area!r}, time_slot={time_slot!r}: {exc}"
+        ) from exc
+
+    if not response.data:
+        raise DBQueryError(f"Upsert ke tabel risk_scores tidak mengembalikan data: {response}")
 
     return response.data[0]
