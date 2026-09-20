@@ -1,0 +1,901 @@
+\documentclass[11pt,a4paper]{article}
+
+% =========================
+% Overleaf-ready packages
+% =========================
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,top=2.2cm,bottom=2.2cm,left=2.4cm,right=2.4cm]{geometry}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,shapes.misc,calc,fit,backgrounds}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+
+% =========================
+% Ganti nama aplikasi di SATU tempat ini saja setelah nama final disepakati tim
+% =========================
+\newcommand{\appname}{Gardu}
+
+% =========================
+% Global styling
+% =========================
+
+\definecolor{jsBlack}{HTML}{111111}
+\definecolor{jsGray}{HTML}{F0F2F5}
+\definecolor{jsMidGray}{HTML}{7A7A7A}
+\definecolor{jsDarkGray}{HTML}{4A4A4A}
+\definecolor{jsBlue}{HTML}{1E5AA8}
+\definecolor{jsSoftBlue}{HTML}{E8F1FF}
+\definecolor{jsGreen}{HTML}{2E7D32}
+\definecolor{jsOrange}{HTML}{F59E0B}
+\definecolor{jsRed}{HTML}{C62828}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=jsBlue,
+  urlcolor=jsBlue,
+  citecolor=jsBlue,
+  pdftitle={Software Requirements Specification for \appname},
+  pdfauthor={Azhar Maulana, dkk. (Tim TCC Vibe Code 2026)}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Software Requirements Specification for \appname}
+\rhead{\small Version 0.2 (Draft)}
+\cfoot{\small \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\titleformat{\section}{\Large\bfseries\color{jsBlack}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\large\bfseries\color{jsBlack}}{\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{jsBlack}}{\thesubsubsection}{0.6em}{}
+
+\setlist[itemize]{leftmargin=1.2cm,itemsep=2pt,topsep=3pt}
+\setlist[enumerate]{leftmargin=1.2cm,itemsep=2pt,topsep=3pt}
+\renewcommand{\arraystretch}{1.25}
+\captionsetup{font=small,labelfont=bf}
+\setlength{\emergencystretch}{3em}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\newtcolorbox{requirementbox}[1]{
+  enhanced,
+  breakable,
+  colback=jsSoftBlue,
+  colframe=jsBlue,
+  title=\textbf{#1},
+  coltitle=black,
+  fonttitle=\bfseries,
+  boxrule=0.7pt,
+  arc=2mm,
+  left=2mm,right=2mm,top=1mm,bottom=1mm
+}
+
+\newcommand{\req}[4]{\textbf{#1} & \textbf{#2} & #3 & #4 \\ \hline}
+
+\begin{document}
+
+% =========================
+% COVER PAGE
+% =========================
+
+\begin{titlepage}
+\thispagestyle{empty}
+\centering
+\vspace*{1.0cm}
+
+{\Huge\bfseries Software Requirements Specification\\[0.25cm] for \appname\par}
+
+\vspace{0.45cm}
+{\large Version: 0.2 \par}
+\vspace{0.15cm}
+{Status: Draft \par}
+\vspace{0.15cm}
+{\large Project Title: Sistem Kesadaran Komunitas dan Rute Aman Warga terhadap Kejahatan Jalanan (Klitih) di Yogyakarta\par}
+
+\vspace{0.85cm}
+{\large\bfseries Azhar Maulana}\par
+{\large\bfseries Diayu Nur Aini}\par
+{\large\bfseries Farsya Nabila Tori}\par
+
+\vspace{4cm}
+
+{\Large\bfseries Document Control\par}
+\vspace{0.35cm}
+
+\begin{tabularx}{0.86\textwidth}{|L{3.4cm}|Y|}
+\hline
+\rowcolor{jsGray}\textbf{Property} & \textbf{Details} \\ \hline
+Project Name & \appname\ -- Sistem Kesadaran Komunitas dan Rute Aman Warga terhadap Kejahatan Jalanan (Klitih) \\ \hline
+Document Type & Software Requirements Specification (SRS) \\ \hline
+Version & 0.2 (Draft) \\ \hline
+Author & Tim \\ \hline
+Date & September 18, 2026 \\ \hline
+Status & Draft \\ \hline
+Kompetisi & Trunodjoyo Creative Competition (TCC) 2026 -- UKM Triple-C, Universitas Trunojoyo Madura \\ \hline
+Cabang Lomba & Vibe Code -- Web Application Development \\ \hline
+\end{tabularx}
+
+\end{titlepage}
+
+% =========================
+% REVISION HISTORY
+% =========================
+
+\thispagestyle{plain}
+\begin{center}
+\vspace*{0.8cm}
+\vspace{0.7cm}
+
+{\LARGE\bfseries Revision History}\par
+\vspace{0.5cm}
+
+\begin{tabularx}{0.96\textwidth}{|C{1.5cm}|C{2.4cm}|Y|L{3.4cm}|}
+\hline
+\rowcolor{jsGray}\textbf{Version} & \textbf{Date} &
+\textbf{Description of Changes \& Updates} & \textbf{Author(s)} \\ \hline
+0.1 & 2026-09-18 & \textbf{Initial Draft:} Pendefinisian ruang
+lingkup sistem, kebutuhan fungsional dan non-fungsional, arsitektur
+tiga AI Agent, technology stack, dan antarmuka sistem, berdasarkan
+hasil riset masalah klitih di Yogyakarta dan diskusi konsep tim. &
+Tim \\ \hline
+0.2 & 2026-09-18 & \textbf{Technology Stack Upgrade:} Memperbarui
+technology stack ke shadcn/ui, Framer Motion, Mapbox GL JS,
+LangChain/LangGraph, dan Supabase (PostgreSQL + pgvector) agar
+kualitas presentasi visual dan kedalaman teknis AI Agent lebih kuat
+di mata juri. &
+Tim \\ \hline
+\end{tabularx}
+\end{center}
+
+\newpage
+
+\tableofcontents
+\newpage
+
+% =========================
+\section{Introduction}
+% =========================
+
+\subsection{Purpose}
+
+Dokumen \textit{Software Requirements Specification} (SRS) ini menjelaskan kebutuhan fungsional, kebutuhan non-fungsional, batasan desain, antarmuka, serta arsitektur untuk \appname\ -- sebuah platform web yang membantu warga dan mahasiswa di Yogyakarta membangun kesadaran situasional terhadap kejahatan jalanan (klitih) melalui pelaporan komunitas, prediksi zona/waktu rawan berbasis AI, dan rekomendasi rute yang lebih aman. Dokumen ini disusun sebagai bagian dari keikutsertaan tim dalam Trunodjoyo Creative Competition (TCC) 2026 cabang Vibe Code, dan digunakan sebagai acuan bersama agar perancangan, implementasi, dan presentasi \textit{functional prototype} memiliki dasar requirement yang jelas dan terukur dalam masa pengembangan yang sangat singkat.
+
+\noindent Dokumen ini ditujukan kepada tiga kelompok pembaca dengan kepentingan yang berbeda. Pertama, tim pengembang, yang menggunakan dokumen ini sebagai acuan teknis dalam menentukan prioritas fitur yang realistis dikerjakan dalam waktu terbatas, serta memastikan setiap komponen AI dan antarmuka dibangun sesuai spesifikasi yang disepakati. Kedua, dewan juri TCC Vibe Code 2026, yang menggunakan dokumen ini untuk menilai kesesuaian solusi dengan tema lomba, kejelasan pemanfaatan AI, serta kematangan perancangan sistem. Ketiga, mitra potensial di masa depan (mis. Satpol PP DIY, komunitas pemantau keamanan, atau pihak kampus), yang dapat menggunakan dokumen ini untuk memahami cakupan dan batasan sistem apabila platform ini dikembangkan lebih lanjut pasca-lomba.
+
+\subsection{Scope}
+
+\appname\ adalah aplikasi berbasis web yang dapat diakses melalui peramban di perangkat apa pun (desktop maupun mobile), tanpa instalasi tambahan. Sistem memungkinkan warga melaporkan indikasi kerawanan secara anonim, menampilkan peta kesadaran zona rawan berbasis prediksi AI, serta memberi peringatan risiko atas rute yang hendak dilalui pengguna.
+
+\noindent
+\textbf{In Scope:}
+\begin{itemize}
+  \item Pelaporan indikasi kerawanan/kejadian oleh warga secara anonim melalui formulir teks singkat.
+  \item Verifikasi dan pengklasteran laporan menggunakan AI (Report Verification Agent) untuk mengurangi duplikasi dan potensi hoaks.
+  \item Prediksi skor kerawanan per area dan rentang waktu menggunakan AI (Risk Prediction Agent), dibangun dari data awal (\textit{seed data}) yang disusun berdasarkan kejadian yang telah terdokumentasi di pemberitaan dan catatan Jogja Police Watch (JPW), digabung dengan laporan warga yang terverifikasi.
+  \item Penasihat rute aman (Safe Route Advisor) yang memberi peringatan apabila rute yang dimasukkan pengguna melintasi zona/waktu berisiko tinggi, beserta saran alternatif.
+  \item Dasbor publik yang memvisualisasikan zona kerawanan dalam bentuk peta interaktif.
+  \item Halaman sumber daya berisi kontak resmi (satgas kejahatan jalanan, program rehabilitasi remaja, layanan pengaduan orang tua).
+\end{itemize}
+
+\noindent
+\textbf{Out of Scope:}
+\begin{itemize}
+  \item Pengumpulan data otomatis (\textit{scraping}) dari media sosial; pada versi prototipe, data awal disusun manual dari sumber yang terdokumentasi.
+  \item Integrasi langsung dengan basis data resmi kepolisian, karena belum tersedia akses data terbuka yang terstruktur untuk kasus ini.
+  \item Aplikasi pendamping berbasis mobile native yang terpisah dari platform web.
+  \item Sistem verifikasi identitas pelapor; pelaporan dirancang anonim untuk mendorong partisipasi warga sekaligus melindungi privasi.
+  \item Mesin navigasi \textit{turn-by-turn} penuh; sistem hanya menandai tingkat risiko di sepanjang rute yang diberikan, bukan pengganti aplikasi peta pada umumnya.
+  \item Fitur apa pun yang memungkinkan identifikasi, pelacakan, atau tindakan main hakim sendiri terhadap terduga pelaku; sistem secara sengaja dirancang berfokus pada pencegahan dan dukungan, bukan penghakiman.
+\end{itemize}
+
+\subsection{Definitions, Acronyms, and Abbreviations}
+
+\begin{tabularx}{\textwidth}{|L{3.4cm}|Y|}
+\hline
+\rowcolor{jsGray}\textbf{Term/Acronym} & \textbf{Definition} \\ \hline
+SRS & Dokumen spesifikasi kebutuhan perangkat lunak yang menjelaskan fungsi, batasan, dan kualitas sistem. \\ \hline
+Klitih & Istilah lokal untuk fenomena kejahatan jalanan di Yogyakarta, umumnya berupa penyerangan acak terhadap pengguna jalan oleh kelompok remaja; kini secara resmi juga disebut Polda DIY sebagai ``kejahatan jalanan''. \\ \hline
+JPW & Jogja Police Watch, lembaga pemantau independen yang rutin mencatat dan merilis data kasus kejahatan jalanan di DIY. \\ \hline
+SOTR & \textit{Sahur on the Road}, tradisi berkeliling membagikan makanan sahur pada bulan Ramadan yang menurut catatan JPW turut menjadi salah satu pemicu naiknya kasus klitih. \\ \hline
+Satpol PP & Satuan Polisi Pamong Praja, instansi daerah yang salah satu tugasnya menangani ketertiban dan keamanan wilayah di DIY. \\ \hline
+AI Agent & Komponen sistem berbasis model AI yang menjalankan satu peran spesifik (verifikasi, prediksi, atau rekomendasi rute) secara otonom dalam alur sistem. \\ \hline
+Risk Score & Skor numerik hasil prediksi AI yang merepresentasikan tingkat kerawanan suatu area pada rentang waktu tertentu. \\ \hline
+Seed Data & Data awal yang disusun tim berdasarkan kejadian nyata yang telah terdokumentasi di media dan catatan JPW, digunakan sebagai titik awal sebelum data komunitas terkumpul. \\ \hline
+Embedding & Representasi numerik (vektor) dari makna suatu teks, digunakan untuk mengukur kemiripan semantik antar-laporan. \\ \hline
+pgvector & Ekstensi PostgreSQL untuk menyimpan dan mencari vektor embedding secara efisien, digunakan pada fitur Report Clustering. \\ \hline
+\end{tabularx}
+
+\subsection{References}
+
+\begin{enumerate}
+  \item Guidebook Lomba Vibe Code -- Trunodjoyo Creative Competition (TCC) 2026, UKM Triple-C, Universitas Trunojoyo Madura.
+  \item Jogja Police Watch, dikutip dalam Tirto.id, ``Di Jogja yang Rawan Klitih, Polisi Mesti Kawal Kegiatan SOTR'' (26 Februari 2025).
+  \item Kepala Kepolisian Daerah DIY, dikutip dalam jurnal Widya Mataram, data laporan kejahatan jalanan Januari--Oktober 2024.
+  \item Jogja Police Watch, dikutip dalam prosiding SNPD STPMD ``APMD'', data korban klitih periode 2016--2021 dan data rehabilitasi remaja 2023.
+  \item Geoportal Provinsi DIY (geoportal.jogjaprov.go.id), layanan data spasial ``Aduan Masyarakat'' oleh Satpol PP DIY.
+  \item Bisnis.com, ``Mengenal Klitih, Fenomena Pembacokan Orang Asing di Jalanan Jogja'' (6 April 2022).
+\end{enumerate}
+
+\subsection{Overview}
+
+Bagian 2 menjelaskan deskripsi umum sistem dan arsitektur tiga AI Agent. Bagian 3 menjelaskan technology stack dan dependensi utama. Bagian 4 menjelaskan antarmuka eksternal. Bagian 5 memuat kebutuhan fungsional yang terstruktur per fitur. Bagian 6 memuat kebutuhan non-fungsional, termasuk aspek sensitivitas data dan etika. Bagian 7 menjelaskan asumsi dan dependensi sistem, termasuk keterbatasan ketersediaan data resmi. Bagian 8 menjelaskan roadmap dan skalabilitas. Lampiran memuat glossary tambahan, daftar fitur yang berada di luar ruang lingkup, traceability matrix, dan ringkasan test case.
+
+\newpage
+
+% =========================
+\section{System Overview and Architecture}
+% =========================
+
+\subsection{High-Level Overview}
+\appname\ merupakan aplikasi web yang diakses langsung melalui peramban tanpa instalasi. Warga dapat melaporkan indikasi kerawanan, melihat peta kesadaran zona rawan, dan memeriksa tingkat risiko rute yang akan dilalui. Di balik antarmuka tersebut, tiga AI Agent bekerja sama: satu memverifikasi dan mengklasterkan laporan masuk, satu memprediksi skor kerawanan per area/waktu, dan satu memberi rekomendasi keamanan rute.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{fig1_context_diagram.png}
+\caption{Context Diagram (DFD Level 0) Sistem \appname}
+\end{figure}
+
+\subsection{Core Modules}
+
+Arsitektur sistem dibagi menjadi beberapa modul utama agar mudah diuji, dirawat, dan dijelaskan secara terpisah pada sesi presentasi juri.
+
+\subsubsection*{A. Report Submission Module}
+Modul ini menerima laporan teks singkat dari warga (lokasi, waktu, deskripsi kejadian) secara anonim, tanpa mewajibkan identitas pelapor.
+
+\subsubsection*{B. Report Verification \& Clustering Agent}
+AI Agent yang mengekstrak data terstruktur dari teks laporan bebas (lokasi, waktu, jenis kejadian), mengubahnya menjadi \textit{embedding} vektor, lalu mengklasterkan laporan-laporan yang merujuk pada kejadian serupa berdasarkan kemiripan vektor tersebut untuk mengurangi duplikasi dan potensi spam/hoaks.
+
+\subsubsection*{C. Risk Prediction Agent}
+AI Agent yang menghitung skor kerawanan per area dan rentang waktu, dilatih dari kombinasi \textit{seed data} (kejadian terdokumentasi) dan laporan warga terverifikasi, termasuk mengenali pola musiman seperti lonjakan menjelang Ramadan.
+
+\subsubsection*{D. Safe Route Advisor}
+AI Agent yang menerima titik asal-tujuan dan waktu keberangkatan pengguna, memeriksa apakah rute melintasi zona berisiko tinggi pada jam tersebut, dan memberi peringatan beserta alternatif jika diperlukan.
+
+\subsubsection*{E. Public Dashboard \& Map Module}
+Modul yang memvisualisasikan skor kerawanan dalam bentuk peta interaktif (termasuk lapisan \textit{heatmap} kerawanan) dan ringkasan tren, dapat diakses publik tanpa perlu login.
+
+\subsubsection*{F. Resource \& Support Module}
+Halaman statis berisi kontak resmi satgas kejahatan jalanan, program rehabilitasi remaja, dan layanan pengaduan orang tua -- dirancang agar sistem berorientasi pencegahan dan dukungan, bukan penghakiman.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.92\textwidth]{fig2_layered_architecture.png}
+\caption{Layered Software Architecture of \appname}
+\end{figure}
+
+\newpage
+
+% =========================
+\section{Technology Stack}
+% =========================
+Stack teknologi versi 0.2 diperbarui agar hasil \textit{functional prototype} tidak hanya memenuhi ketentuan lomba, tetapi juga tampil meyakinkan secara visual dan menunjukkan kedalaman teknis pada arsitektur AI Agent -- tanpa mengorbankan kecepatan pengembangan yang sangat krusial mengingat masa pengembangan yang sangat singkat.
+
+\subsection{Frontend}
+\begin{itemize}
+  \item \textbf{Framework:} Next.js dengan Tailwind CSS sebagai fondasi styling.
+  \item \textbf{Komponen UI:} shadcn/ui, digunakan untuk komponen antarmuka (form, dialog, badge status risiko, dsb.) yang konsisten dan terlihat matang tanpa perlu membangun design system dari nol -- krusial untuk memenuhi aspek Desain UI/UX pada rubrik penilaian.
+  \item \textbf{Animasi \& Interaksi:} Framer Motion, untuk transisi halus antar halaman dan micro-interaction (mis. animasi saat skor risiko berubah warna, transisi popup peta), memberi kesan produk yang premium dan bukan sekadar prototipe kasar.
+  \item \textbf{Peta Interaktif:} Mapbox GL JS (atau MapLibre GL JS sebagai alternatif berbasis open-source apabila kuota API menjadi kendala saat demonstrasi), dipilih karena mendukung rendering vector tile, lapisan \textit{heatmap} berkinerja tinggi, dan visualisasi peta yang jauh lebih meyakinkan di hadapan juri dibanding pustaka peta raster konvensional.
+\end{itemize}
+
+\subsection{Backend}
+\begin{itemize}
+  \item \textbf{Framework:} FastAPI (Python), dipilih karena kemudahan orkestrasi pemanggilan API AI dan familiaritas tim.
+  \item \textbf{Orkestrasi AI Agent:} LangChain / LangGraph dijalankan di atas FastAPI untuk menyusun alur kerja ketiga AI Agent (Verification, Risk Prediction, Safe Route Advisor) sebagai rangkaian langkah yang terstruktur dan dapat ditelusuri, alih-alih pemanggilan API mentah yang tersebar di banyak endpoint terpisah -- sekaligus mempermudah penjelasan alur kerja AI saat presentasi ke juri.
+  \item \textbf{Database:} Supabase (PostgreSQL terkelola), dipilih karena kecepatan \textit{setup}, REST API dan autentikasi bawaan, serta dukungan ekstensi \texttt{pgvector} yang krusial untuk fitur Report Clustering (lihat Bagian 3.3).
+\end{itemize}
+
+\subsection{Layanan AI dan Embedding}
+\begin{itemize}
+  \item \textbf{Model/API:} Model bahasa multimodal (mis. Claude atau Gemini) yang dipanggil melalui API untuk ketiga AI Agent, sesuai daftar AI yang diperbolehkan pada guidebook lomba.
+  \item \textbf{Report Clustering berbasis Embedding:} Setiap laporan yang masuk diubah menjadi \textit{vector embedding} (representasi numerik dari makna teks) dan disimpan pada kolom \texttt{pgvector} di Supabase. Laporan baru dibandingkan dengan laporan lain dalam rentang waktu dan lokasi berdekatan menggunakan pencarian kemiripan vektor (\textit{cosine similarity}), sehingga laporan yang menggambarkan kejadian yang sama -- meski ditulis dengan kalimat yang berbeda-beda -- dapat dikenali sebagai satu klaster insiden.
+  \item Tidak dilakukan pelatihan model dari nol; seluruh kemampuan AI memanfaatkan API layanan yang sudah tersedia agar dapat diselesaikan dalam masa pengembangan yang sangat singkat.
+\end{itemize}
+
+\subsection{Hosting dan Deployment}
+\begin{itemize}
+  \item \textbf{Frontend:} Vercel.
+  \item \textbf{Backend:} Railway atau Render.
+  \item \textbf{Database \& Vector Store:} Supabase (terkelola sepenuhnya, tidak memerlukan hosting basis data terpisah).
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.72\textwidth]{fig3_technology_stack.png}
+\caption{Technology Stack of \appname}
+\end{figure}
+
+\newpage
+
+% =========================
+\section{External Interface Requirements}
+% =========================
+\subsection{User Interfaces}
+Antarmuka harus sederhana dan cepat dipahami, mengingat sebagian pengguna mengakses sistem dalam kondisi cemas atau tergesa (mis. sebelum bepergian malam hari). Bahasa yang digunakan harus netral dan tidak menghakimi. Komponen antarmuka dibangun di atas shadcn/ui dengan animasi Framer Motion agar terasa premium tanpa mengorbankan kejelasan informasi.
+
+\noindent
+\textbf{Major Screens / Pages:}
+\begin{itemize}
+  \item \textbf{Landing Page:} Penjelasan singkat tujuan platform dan ajakan melapor/menelusuri peta.
+  \item \textbf{Halaman Lapor Kejadian:} Formulir teks singkat (lokasi, waktu, deskripsi) tanpa perlu login.
+  \item \textbf{Dasbor Peta Kerawanan:} Peta interaktif publik berbasis Mapbox GL JS dengan lapisan \textit{heatmap} menampilkan skor kerawanan per area/waktu.
+  \item \textbf{Halaman Cek Rute Aman:} Formulir titik asal-tujuan dan waktu, menampilkan status risiko rute beserta alternatif.
+  \item \textbf{Halaman Sumber Daya \& Kontak:} Daftar kontak satgas, program rehabilitasi, dan layanan pengaduan.
+  \item \textbf{Panel Moderasi (Internal):} Halaman sederhana bagi tim untuk meninjau laporan yang ditandai AI sebagai berpotensi hoaks/duplikat.
+\end{itemize}
+
+\subsection{Hardware Interfaces}
+\begin{itemize}
+  \item \textbf{Perangkat Klien:} Laptop, komputer, atau perangkat mobile dengan peramban modern.
+  \item \textbf{GPS/Lokasi:} Layanan lokasi peramban untuk mempermudah pengisian titik asal pada fitur Cek Rute Aman.
+\end{itemize}
+
+\subsection{Software Interfaces}
+\begin{tabularx}{\textwidth}{|L{3.6cm}|Y|Y|}
+\hline
+\rowcolor{jsGray}\textbf{Interface} & \textbf{Description} &
+\textbf{Usage} \\ \hline
+API AI (Claude/Gemini) & Layanan model bahasa multimodal pihak ketiga. & Menjalankan Verification Agent, Risk Prediction Agent, dan Safe Route Advisor, diorkestrasi melalui LangChain/LangGraph. \\ \hline
+Mapbox GL JS / MapLibre & Layanan dan pustaka peta vektor interaktif. & Menampilkan dasbor kerawanan (termasuk heatmap) dan memproses input rute. \\ \hline
+Supabase (PostgreSQL + pgvector) & Basis data relasional terkelola dengan dukungan pencarian vektor. & Menyimpan laporan, seed data, embedding laporan, dan hasil prediksi risiko. \\ \hline
+Vercel \& Railway/Render & Platform hosting. & Menjalankan frontend dan backend sistem. \\ \hline
+\end{tabularx}
+
+\subsection{Communication Interfaces}
+Seluruh komunikasi antar komponen menggunakan protokol HTTPS. Permintaan ke API AI dan layanan peta dilakukan secara sinkron dari backend, dengan mekanisme \textit{timeout} dan pesan kesalahan yang jelas apabila layanan pihak ketiga tidak merespons.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.98\textwidth]{fig4_sequence_diagram.png}
+\caption{Sequence Diagram: Alur Laporan hingga Pembaruan Skor Kerawanan}
+\end{figure}
+
+\newpage
+
+% =========================
+\section{Specific Requirements}
+% =========================
+
+Bagian ini memuat kebutuhan fungsional yang disusun secara atomik agar dapat diuji dan ditelusuri ke test case.
+
+\subsection{Feature: Community Incident Reporting}
+\subsubsection{Description and Priority}
+Fitur ini memungkinkan warga melaporkan indikasi kerawanan secara anonim. Priority: \textbf{Must Have}.
+
+\subsubsection{Input-Process-Output Description}
+\textbf{Inputs:} deskripsi kejadian (teks bebas), lokasi (nama jalan/area atau titik peta), perkiraan waktu kejadian.\\
+\textbf{Processing:} validasi input dasar (panjang teks minimum, lokasi tidak kosong), penyimpanan sementara sebagai laporan berstatus ``menunggu verifikasi''.\\
+\textbf{Outputs:} laporan tersimpan dan diteruskan ke Report Verification \& Clustering Agent.
+
+\subsubsection{Functional Requirements}
+\begin{longtable}{|L{2.3cm}|L{4.0cm}|L{6.9cm}|L{1.6cm}|}
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} & \textbf{Priority} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} & \textbf{Priority} \\ \hline
+\endhead
+\req{REQ-F-001}{Anonymous Report Submission}{Sistem harus memungkinkan warga mengirim laporan kejadian tanpa perlu membuat akun atau memberikan identitas pribadi.}{Must}
+\req{REQ-F-002}{Location Input}{Sistem harus menerima input lokasi kejadian dalam bentuk nama jalan/area atau titik pada peta.}{Must}
+\req{REQ-F-003}{Time Input}{Sistem harus menerima input perkiraan waktu kejadian dalam bentuk tanggal dan jam.}{Must}
+\req{REQ-F-004}{Basic Input Validation}{Sistem harus menolak laporan dengan deskripsi kosong atau lokasi tidak valid, disertai pesan kesalahan yang jelas.}{Must}
+\req{REQ-F-005}{Report Status Tracking}{Sistem harus menyimpan status tiap laporan (menunggu verifikasi, terverifikasi, ditandai duplikat/hoaks).}{Should}
+\end{longtable}
+
+\subsection{Feature: Report Verification \& Clustering (AI Agent)}
+\subsubsection{Description and Priority}
+Fitur ini menggunakan AI untuk mengekstrak data terstruktur dari laporan teks bebas dan mengklasterkan laporan yang merujuk kejadian serupa menggunakan pencarian kemiripan embedding. Priority: \textbf{Must Have}.
+
+\subsubsection{Input-Process-Output Description}
+\textbf{Inputs:} teks laporan mentah dari warga.\\
+\textbf{Processing:} pemanggilan API AI (diorkestrasi LangChain) untuk mengekstrak entitas (lokasi, waktu, jenis kejadian), pembuatan \textit{vector embedding} dari teks laporan, dan pencarian kemiripan vektor (\texttt{pgvector}) terhadap laporan lain dalam rentang waktu \& lokasi berdekatan.\\
+\textbf{Outputs:} data terstruktur laporan, status klaster (baru/tergabung ke klaster kejadian yang sudah ada), penanda potensi duplikat/hoaks.
+
+\begin{longtable}{|L{2.3cm}|L{4.0cm}|L{6.9cm}|L{1.6cm}|}
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} & \textbf{Priority} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} & \textbf{Priority} \\ \hline
+\endhead
+\req{REQ-F-010}{Entity Extraction}{Sistem harus mengekstrak lokasi, waktu, dan jenis kejadian dari teks laporan bebas menggunakan AI.}{Must}
+\req{REQ-F-011}{Embedding-Based Report Clustering}{Sistem harus mengelompokkan laporan-laporan yang merujuk pada kejadian yang sama berdasarkan kemiripan vektor embedding (\texttt{pgvector}), bukan sekadar pencocokan kata kunci.}{Must}
+\req{REQ-F-012}{Hoax/Duplicate Flagging}{Sistem harus menandai laporan yang berpotensi duplikat atau tidak konsisten untuk ditinjau moderator.}{Should}
+\req{REQ-F-013}{Verified Incident Promotion}{Sistem harus menaikkan status laporan menjadi ``terverifikasi'' apabila didukung oleh lebih dari satu laporan independen yang konsisten.}{Should}
+\req{REQ-F-014}{Embedding Storage}{Sistem harus menyimpan representasi embedding setiap laporan pada kolom \texttt{pgvector} agar dapat digunakan kembali untuk pencarian kemiripan di masa depan.}{Must}
+\end{longtable}
+
+\subsection{Feature: Risk Prediction (AI Agent)}
+\subsubsection{Description and Priority}
+Fitur ini menghitung skor kerawanan per area dan rentang waktu. Priority: \textbf{Must Have}.
+
+\subsubsection{Input-Process-Output Description}
+\textbf{Inputs:} seed data kejadian terdokumentasi, laporan warga yang terverifikasi, waktu saat ini/waktu yang ditanyakan.\\
+\textbf{Processing:} agregasi data historis dan data komunitas, perhitungan skor kerawanan per area/jam, pengenalan pola musiman (mis. lonjakan menjelang Ramadan).\\
+\textbf{Outputs:} skor kerawanan per area/waktu yang diperbarui secara berkala, ditampilkan pada dasbor (termasuk lapisan heatmap Mapbox) dan digunakan oleh Safe Route Advisor.
+
+\begin{longtable}{|L{2.3cm}|L{4.0cm}|L{6.9cm}|L{1.6cm}|}
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} & \textbf{Priority} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} & \textbf{Priority} \\ \hline
+\endhead
+\req{REQ-F-020}{Area-Time Risk Scoring}{Sistem harus menghasilkan skor kerawanan numerik untuk kombinasi area dan rentang waktu tertentu.}{Must}
+\req{REQ-F-021}{Seed Data Ingestion}{Sistem harus dapat memuat seed data awal yang disusun tim dari kejadian terdokumentasi sebagai dasar perhitungan sebelum data komunitas cukup banyak.}{Must}
+\req{REQ-F-022}{Community Data Integration}{Sistem harus memperbarui skor kerawanan menggunakan laporan warga yang telah berstatus terverifikasi.}{Should}
+\req{REQ-F-023}{Seasonal Pattern Recognition}{Sistem harus mampu merefleksikan pola musiman yang diketahui (mis. lonjakan kasus menjelang Ramadan) pada skor kerawanan.}{Should}
+\req{REQ-F-024}{Data Source Transparency}{Sistem harus menyimpan metadata sumber untuk setiap entri seed data (mis. tautan berita/laporan JPW yang menjadi rujukan).}{Must}
+\end{longtable}
+
+\subsection{Feature: Safe Route Advisor (AI Agent)}
+\subsubsection{Description and Priority}
+Fitur ini memberi peringatan risiko atas rute yang akan dilalui pengguna. Priority: \textbf{Must Have}.
+
+\subsubsection{Input-Process-Output Description}
+\textbf{Inputs:} titik asal, titik tujuan, waktu keberangkatan.\\
+\textbf{Processing:} pemeriksaan apakah rute yang diberikan melintasi area dengan skor kerawanan tinggi pada rentang waktu tersebut.\\
+\textbf{Outputs:} status risiko rute (aman/waspada/berisiko tinggi), beserta saran area yang sebaiknya dihindari.
+
+\begin{longtable}{|L{2.3cm}|L{4.0cm}|L{6.9cm}|L{1.6cm}|}
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} & \textbf{Priority} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} & \textbf{Priority} \\ \hline
+\endhead
+\req{REQ-F-030}{Route Risk Check}{Sistem harus memeriksa apakah rute asal-tujuan yang dimasukkan pengguna melintasi zona berisiko tinggi pada waktu yang dipilih.}{Must}
+\req{REQ-F-031}{Risk Level Indicator}{Sistem harus menampilkan indikator risiko rute secara sederhana (mis. aman/waspada/berisiko tinggi).}{Must}
+\req{REQ-F-032}{Alternative Area Suggestion}{Sistem harus menyarankan area yang sebaiknya dihindari apabila rute berisiko tinggi terdeteksi.}{Should}
+\end{longtable}
+
+\subsection{Feature: Public Risk Dashboard}
+\subsubsection{Description and Priority}
+Fitur ini menampilkan visualisasi publik atas zona kerawanan. Priority: \textbf{Must Have}.
+
+\subsubsection{Input-Process-Output Description}
+\textbf{Inputs:} skor kerawanan per area/waktu dari Risk Prediction Agent.\\
+\textbf{Processing:} rendering peta interaktif (Mapbox GL JS) dengan lapisan heatmap berdasarkan tingkat kerawanan.\\
+\textbf{Outputs:} peta publik yang dapat diakses tanpa login, menampilkan zona kerawanan terkini.
+
+\begin{longtable}{|L{2.3cm}|L{4.0cm}|L{6.9cm}|L{1.6cm}|}
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} & \textbf{Priority} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} & \textbf{Priority} \\ \hline
+\endhead
+\req{REQ-F-040}{Interactive Heatmap}{Sistem harus menampilkan peta interaktif dengan lapisan heatmap sesuai tingkat skor kerawanan menggunakan Mapbox GL JS.}{Must}
+\req{REQ-F-041}{Public Access}{Dasbor peta harus dapat diakses publik tanpa memerlukan login.}{Must}
+\req{REQ-F-042}{Non-Stigmatizing Presentation}{Sistem harus menampilkan data kerawanan tanpa menyebut atau mengarah pada identifikasi individu terduga pelaku.}{Must}
+\end{longtable}
+
+\subsection{Feature: Resource \& Support Directory}
+\subsubsection{Description and Priority}
+Fitur ini menyediakan akses cepat ke kontak resmi terkait pencegahan dan rehabilitasi. Priority: \textbf{Should Have}.
+
+\subsubsection{Input-Process-Output Description}
+\textbf{Inputs:} tidak ada input pengguna; konten dikelola tim.\\
+\textbf{Processing:} penyajian halaman statis.\\
+\textbf{Outputs:} daftar kontak satgas, program rehabilitasi remaja, dan layanan pengaduan orang tua.
+
+\begin{longtable}{|L{2.3cm}|L{4.0cm}|L{6.9cm}|L{1.6cm}|}
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} & \textbf{Priority} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} & \textbf{Priority} \\ \hline
+\endhead
+\req{REQ-F-050}{Official Contact Listing}{Sistem harus menampilkan daftar kontak resmi terkait pencegahan kejahatan jalanan dan rehabilitasi remaja.}{Should}
+\req{REQ-F-051}{Preventive Framing}{Konten pada halaman ini harus disusun dengan nada suportif dan preventif, bukan punitif.}{Should}
+\end{longtable}
+
+\subsection{Feature: Basic Moderation Panel}
+\subsubsection{Description and Priority}
+Fitur ini memungkinkan tim meninjau laporan yang ditandai AI sebagai berpotensi bermasalah. Priority: \textbf{Should Have}.
+
+\subsubsection{Input-Process-Output Description}
+\textbf{Inputs:} daftar laporan berstatus ``ditandai'' dari Verification Agent.\\
+\textbf{Processing:} peninjauan manual oleh tim, keputusan menyetujui/menolak laporan.\\
+\textbf{Outputs:} status akhir laporan (terverifikasi/ditolak).
+
+\begin{longtable}{|L{2.3cm}|L{4.0cm}|L{6.9cm}|L{1.6cm}|}
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} & \textbf{Priority} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} & \textbf{Priority} \\ \hline
+\endhead
+\req{REQ-F-060}{Flagged Report Review}{Sistem harus menyediakan halaman internal bagi tim untuk meninjau laporan yang ditandai AI.}{Should}
+\req{REQ-F-061}{Manual Override}{Tim harus dapat menyetujui atau menolak status laporan secara manual dari panel moderasi.}{Should}
+\end{longtable}
+
+\newpage
+
+% =========================
+\section{Non-Functional Requirements}
+% =========================
+
+\subsection{Performance Requirements}
+\begin{longtable}{|L{2.4cm}|L{4.2cm}|L{7.2cm}|}
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} \\ \hline
+\endhead
+REQ-NF-100 & Report Submission Speed & Pengiriman laporan harus mendapat konfirmasi diterima dalam $\leq$ 3 detik, tidak termasuk waktu proses AI di latar belakang. \\ \hline
+REQ-NF-101 & Dashboard Load Time & Dasbor peta kerawanan (Mapbox GL JS) harus termuat dalam $\leq$ 5 detik pada koneksi internet standar. \\ \hline
+REQ-NF-102 & AI Response Timeout Handling & Sistem harus menampilkan status ``sedang diproses'' apabila respons AI Agent melebihi 8 detik, tanpa membekukan antarmuka. \\ \hline
+\end{longtable}
+
+\subsection{Reliability Requirements}
+\begin{longtable}{|L{2.4cm}|L{4.2cm}|L{7.2cm}|}
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} \\ \hline
+\endhead
+REQ-NF-110 & Graceful AI Failure Handling & Sistem harus tetap menyimpan laporan mentah meskipun pemanggilan API AI gagal, untuk diproses ulang kemudian. \\ \hline
+REQ-NF-111 & Dashboard Fallback & Apabila layanan Mapbox tidak tersedia, sistem harus menampilkan data kerawanan dalam bentuk daftar/tabel sebagai cadangan. \\ \hline
+\end{longtable}
+
+\subsection{Security and Data Sensitivity Requirements}
+\begin{longtable}{|L{2.4cm}|L{4.2cm}|L{7.2cm}|}
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} \\ \hline
+\endhead
+REQ-NF-120 & Reporter Anonymity & Sistem tidak boleh menyimpan data identitas pribadi pelapor (nama, nomor telepon, akun media sosial). \\ \hline
+REQ-NF-121 & No Suspect Identification & Sistem tidak boleh menyediakan fitur yang memungkinkan penyebutan nama, foto, atau identitas terduga pelaku dalam bentuk apa pun. \\ \hline
+REQ-NF-122 & Abuse Rate Limiting & Sistem harus membatasi jumlah laporan dari satu sumber (mis. alamat IP) dalam rentang waktu singkat untuk mencegah spam/penyalahgunaan. \\ \hline
+REQ-NF-123 & Moderation Access Control & Panel moderasi hanya dapat diakses oleh anggota tim melalui autentikasi sederhana (Supabase Auth). \\ \hline
+\end{longtable}
+
+\subsection{Portability Requirements}
+\begin{longtable}{|L{2.4cm}|L{4.2cm}|L{7.2cm}|}
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} \\ \hline
+\endhead
+REQ-NF-130 & Cross-Browser Support & Sistem harus berfungsi normal pada peramban berbasis Chromium dan Firefox versi terbaru. \\ \hline
+REQ-NF-131 & Responsive Layout & Antarmuka harus tetap dapat digunakan dengan baik pada layar mobile maupun desktop. \\ \hline
+\end{longtable}
+
+\subsection{Usability Requirements}
+\begin{longtable}{|L{2.4cm}|L{4.2cm}|L{7.2cm}|}
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Requirement Description} \\ \hline
+\endhead
+REQ-NF-140 & Low-Friction Reporting & Formulir pelaporan harus dapat diisi dan dikirim dalam waktu kurang dari 1 menit oleh pengguna baru. \\ \hline
+REQ-NF-141 & Neutral, Non-Alarming Language & Seluruh salinan antarmuka harus menggunakan bahasa yang informatif dan menenangkan, tidak sensasional atau menakut-nakuti. \\ \hline
+\end{longtable}
+
+\newpage
+
+% =========================
+\section{Assumptions and Dependencies}
+% =========================
+
+\subsection{Assumptions}
+\begin{enumerate}
+  \item Belum tersedia dataset resmi terbuka dan terstruktur (berkoordinat, per-insiden) untuk kasus klitih di Yogyakarta; seed data disusun tim dari kejadian yang terdokumentasi di pemberitaan dan catatan JPW.
+  \item Pengguna memiliki akses internet dan peramban modern; sistem tidak dirancang untuk beroperasi secara offline.
+  \item Layanan API AI, Mapbox, dan Supabase pihak ketiga tersedia dan responsif selama masa pengembangan dan demonstrasi ke juri.
+  \item Data komunitas (laporan warga) akan bertambah secara bertahap; performa prediksi pada awal peluncuran bergantung pada kualitas seed data.
+  \item Tim memiliki kewenangan untuk menyusun dan mempresentasikan seed data secara transparan sebagai simulasi, bukan sebagai klaim data resmi kepolisian.
+  \item Apabila tim belum familiar dengan LangGraph, orkestrasi AI Agent dapat disederhanakan menggunakan komponen LangChain dasar (chains/tools) tanpa mengurangi kejelasan arsitektur tiga-agent saat presentasi.
+\end{enumerate}
+
+\subsection{Dependencies}
+\begin{tabularx}{\textwidth}{|L{3.6cm}|L{2.0cm}|Y|}
+\hline
+\rowcolor{jsGray}\textbf{Dependency} & \textbf{Version} & \textbf{Description} \\ \hline
+Next.js & Terbaru & Framework frontend. \\ \hline
+Tailwind CSS & Terbaru & Utility-first styling framework. \\ \hline
+shadcn/ui & Terbaru & Pustaka komponen UI di atas Tailwind CSS dan Radix. \\ \hline
+Framer Motion & Terbaru & Pustaka animasi dan transisi untuk React/Next.js. \\ \hline
+Mapbox GL JS / MapLibre GL JS & Terbaru & Pustaka dan layanan peta vektor interaktif serta heatmap. \\ \hline
+FastAPI & Terbaru & Framework backend Python. \\ \hline
+LangChain / LangGraph & Terbaru & Framework orkestrasi AI Agent di atas FastAPI. \\ \hline
+Supabase (PostgreSQL + pgvector) & -- & Basis data terkelola dengan dukungan pencarian vektor untuk embedding laporan. \\ \hline
+API AI (Claude/Gemini) & -- & Layanan model bahasa untuk tiga AI Agent. \\ \hline
+Vercel, Railway/Render & -- & Platform hosting frontend dan backend. \\ \hline
+\end{tabularx}
+
+\newpage
+
+% =========================
+\section{Future Roadmap and Scalability}
+% =========================
+
+Roadmap pengembangan diarahkan untuk memastikan alur inti (lapor -- verifikasi -- prediksi -- rute aman) berjalan sebagai \textit{functional prototype} terlebih dahulu, sebelum memperluas cakupan data dan kemitraan pasca-lomba.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{fig5_roadmap.png}
+\caption{Product Roadmap \appname}
+\end{figure}
+
+\noindent \textbf{Phase 1: Prototipe Inti.} Fase ini memastikan alur pelaporan, verifikasi AI berbasis embedding, prediksi risiko dari seed data, dan dasbor heatmap berjalan stabil sebagai bahan demonstrasi lomba.\\
+\textbf{Phase 2: Penguatan Data.} Fase ini berfokus membangun kemitraan dengan JPW/Satpol PP/kampus untuk memperoleh data yang lebih kaya, serta menyempurnakan Safe Route Advisor.\\
+\textbf{Phase 3: Perluasan.} Fase ini mencakup pengembangan aplikasi mobile, replikasi konsep ke kota lain, dan evaluasi peluang integrasi data resmi kepolisian apabila tersedia.
+
+\newpage
+
+% =========================
+\section{Approval}
+% =========================
+\subsection{Sign-off}
+Dokumen \textit{Software Requirements Specification} (SRS) ini masih berstatus \textbf{draf} dan disusun berdasarkan hasil riset masalah klitih di Yogyakarta serta diskusi konsep tim menjelang tenggat pengumpulan TCC Vibe Code 2026. Persetujuan pada tabel berikut menandakan bahwa seluruh anggota tim telah membaca ruang lingkup, kebutuhan fungsional dan non-fungsional, serta batasan sistem yang tercantum dalam dokumen ini.
+
+\begin{longtable}{|L{4.2cm}|L{3.2cm}|L{2.6cm}|L{1.8cm}|}
+\hline
+\rowcolor{jsGray}\textbf{Project Role} & \textbf{Name} & \textbf{Signature} & \textbf{Date} \\ \hline
+Anggota Tim & Azhar Maulana & & \\ \hline
+Anggota Tim & Diayu Nur Aini & & \\ \hline
+Anggota Tim & Farsya Nabila Tori & & \\ \hline
+\end{longtable}
+
+\vfill
+\begin{center}
+\textbf{[END OF DOCUMENT]}
+\end{center}
+
+\newpage
+
+% =========================
+\section*{Appendix A: Glossary}
+\addcontentsline{toc}{section}{Appendix A: Glossary}
+% =========================
+\begin{tabularx}{\textwidth}{|L{4cm}|Y|}
+\hline
+\rowcolor{jsGray}\textbf{Term} & \textbf{Definition} \\ \hline
+Verified Incident & Laporan yang telah didukung lebih dari satu sumber independen dan dinyatakan konsisten oleh AI/moderator. \\ \hline
+Risk Zone & Area geografis yang diberi skor kerawanan tertentu berdasarkan hasil Risk Prediction Agent. \\ \hline
+Cold Start & Kondisi awal sistem sebelum data komunitas cukup banyak, saat prediksi masih bergantung pada seed data. \\ \hline
+Rate Limiting & Teknik pembatasan jumlah permintaan/laporan dari satu sumber dalam rentang waktu tertentu untuk mencegah penyalahgunaan. \\ \hline
+Vector Similarity Search & Teknik pencarian data berdasarkan kedekatan makna (bukan kata kunci literal) menggunakan embedding, difasilitasi ekstensi pgvector. \\ \hline
+\end{tabularx}
+
+\newpage
+
+\section*{Appendix B: Features Outside Project Scope}
+\addcontentsline{toc}{section}{Appendix B: Features Outside Project Scope}
+\begin{tabularx}{\textwidth}{|L{4.6cm}|Y|}
+\hline
+\rowcolor{jsGray}\textbf{Excluded Item} & \textbf{Reason} \\ \hline
+Scraping otomatis media sosial & Kompleksitas teknis dan risiko keakuratan terlalu tinggi untuk masa pengembangan yang sangat singkat; pelaporan manual oleh warga sudah cukup untuk functional prototype. \\ \hline
+Integrasi data resmi kepolisian & Belum tersedia akses data terbuka dan terstruktur; direncanakan sebagai pengembangan Phase 2 pasca-lomba. \\ \hline
+Identifikasi/pelacakan terduga pelaku & Bertentangan dengan prinsip desain sistem yang berorientasi pencegahan dan dukungan, bukan penghakiman atau tindakan main hakim sendiri. \\ \hline
+Aplikasi mobile native terpisah & Di luar cakupan waktu pengembangan; versi web responsif sudah dapat diakses dari perangkat mobile melalui peramban. \\ \hline
+LangGraph state graph kompleks penuh & Apabila waktu tidak mencukupi, cukup gunakan LangChain chains/tools sederhana; kompleksitas graph penuh bukan prasyarat mutlak functional prototype. \\ \hline
+\end{tabularx}
+
+\newpage
+
+\section*{Appendix C: Requirements Traceability Matrix}
+\addcontentsline{toc}{section}{Appendix C: Requirements Traceability Matrix}
+\footnotesize
+\begin{longtable}{|L{1.7cm}|L{2.6cm}|L{2.3cm}|L{2.6cm}|L{1.7cm}|L{2.0cm}|}
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Design Element} & \textbf{Code Module} & \textbf{Test Case} & \textbf{Sumber Konsep} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\textbf{Req ID} & \textbf{Requirement Title} & \textbf{Design Element} & \textbf{Code Module} & \textbf{Test Case} & \textbf{Sumber Konsep} \\ \hline
+\endhead
+REQ-F-001 & Anonymous Report Submission & Report Submission Module & \texttt{report\_form.tsx} & TC-RPT-001 & Diskusi Tim \\ \hline
+REQ-F-002 & Location Input & Report Submission Module & \texttt{report\_form.tsx} & TC-RPT-001 & Diskusi Tim \\ \hline
+REQ-F-004 & Basic Input Validation & Report Submission Module & \texttt{report\_form.tsx} & TC-RPT-002 & Diskusi Tim \\ \hline
+REQ-F-010 & Entity Extraction & Verification Agent & \texttt{verify\_agent.py} & TC-VER-001 & Diskusi Tim \\ \hline
+REQ-F-011 & Embedding-Based Report Clustering & Verification Agent & \texttt{verify\_agent.py}, \texttt{embedding\_service.py} & TC-VER-002 & Diskusi Tim \\ \hline
+REQ-F-014 & Embedding Storage & Verification Agent & \texttt{embedding\_service.py} & TC-VER-003 & Diskusi Tim \\ \hline
+REQ-F-020 & Area-Time Risk Scoring & Risk Prediction Agent & \texttt{risk\_agent.py} & TC-RSK-001 & Data JPW/Berita \\ \hline
+REQ-F-021 & Seed Data Ingestion & Risk Prediction Agent & \texttt{seed\_loader.py} & TC-RSK-002 & Data JPW/Berita \\ \hline
+REQ-F-023 & Seasonal Pattern Recognition & Risk Prediction Agent & \texttt{risk\_agent.py} & TC-RSK-003 & Data JPW (SOTR/Ramadan) \\ \hline
+REQ-F-030 & Route Risk Check & Safe Route Advisor & \texttt{route\_agent.py} & TC-RTE-001 & Diskusi Tim \\ \hline
+REQ-F-031 & Risk Level Indicator & Safe Route Advisor & \texttt{route\_agent.py} & TC-RTE-002 & Diskusi Tim \\ \hline
+REQ-F-040 & Interactive Heatmap & Public Dashboard Module & \texttt{dashboard\_map.tsx} & TC-DSH-001 & Diskusi Tim \\ \hline
+REQ-F-042 & Non-Stigmatizing Presentation & Public Dashboard Module & \texttt{dashboard\_map.tsx} & TC-DSH-002 & Prinsip Etika Tim \\ \hline
+REQ-F-050 & Official Contact Listing & Resource \& Support Module & \texttt{resources.tsx} & TC-RES-001 & Diskusi Tim \\ \hline
+REQ-F-060 & Flagged Report Review & Moderation Panel & \texttt{admin\_moderation.tsx} & TC-MOD-001 & Diskusi Tim \\ \hline
+REQ-NF-120 & Reporter Anonymity & System-wide & Seluruh modul pelaporan & TC-SEC-001 & Prinsip Etika Tim \\ \hline
+REQ-NF-121 & No Suspect Identification & System-wide & Seluruh modul & TC-SEC-002 & Prinsip Etika Tim \\ \hline
+\end{longtable}
+\normalsize
+
+\newpage
+
+\section*{Appendix D: Test Case Summary}
+\addcontentsline{toc}{section}{Appendix D: Test Case Summary}
+
+Bagian ini memuat ringkasan test case beserta indeks keberhasilan (\textit{pass criteria}) yang terukur, sebagai acuan eksekusi pengujian menjelang demonstrasi ke juri. Test case dikelompokkan sesuai fitur pada Bagian 5 dan ditelusuri ke Req ID pada Appendix C.
+
+\subsection*{D.1 Ringkasan Index Test Case}
+\footnotesize
+\begin{longtable}{|L{2.0cm}|L{1.8cm}|L{5.8cm}|L{1.7cm}|L{1.4cm}|L{1.3cm}|}
+\hline
+\rowcolor{jsGray}\textbf{TC ID} & \textbf{Req ID} & \textbf{Objective} & \textbf{Type} & \textbf{Priority} & \textbf{Status} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\textbf{TC ID} & \textbf{Req ID} & \textbf{Objective} & \textbf{Type} & \textbf{Priority} & \textbf{Status} \\ \hline
+\endhead
+TC-RPT-001 & REQ-F-001 & Memastikan warga dapat mengirim laporan tanpa membuat akun. & Functional & Must & Planned \\ \hline
+TC-RPT-002 & REQ-F-004 & Memastikan laporan dengan deskripsi kosong ditolak sistem. & Functional & Must & Planned \\ \hline
+TC-VER-001 & REQ-F-010 & Memastikan AI dapat mengekstrak lokasi, waktu, dan jenis kejadian dari teks laporan bebas. & Functional & Must & Planned \\ \hline
+TC-VER-002 & REQ-F-011 & Memastikan dua laporan berbeda dengan kejadian yang sama diklasterkan menjadi satu insiden berdasarkan kemiripan embedding. & Functional & Must & Planned \\ \hline
+TC-VER-003 & REQ-F-014 & Memastikan embedding setiap laporan tersimpan di kolom pgvector dan dapat dikueri kembali. & Functional & Must & Planned \\ \hline
+TC-RSK-001 & REQ-F-020 & Memastikan sistem menghasilkan skor kerawanan untuk kombinasi area dan waktu tertentu. & Functional & Must & Planned \\ \hline
+TC-RSK-002 & REQ-F-021 & Memastikan seed data berhasil dimuat dan memengaruhi skor kerawanan awal. & Functional & Must & Planned \\ \hline
+TC-RSK-003 & REQ-F-023 & Memastikan skor kerawanan meningkat pada periode yang secara historis dikenal rawan (mis. jelang Ramadan). & Functional & Should & Planned \\ \hline
+TC-RTE-001 & REQ-F-030 & Memastikan sistem mendeteksi rute yang melintasi zona berisiko tinggi. & Functional & Must & Planned \\ \hline
+TC-RTE-002 & REQ-F-031 & Memastikan indikator risiko rute ditampilkan dengan jelas kepada pengguna. & UI & Must & Planned \\ \hline
+TC-DSH-001 & REQ-F-040 & Memastikan heatmap Mapbox menampilkan pewarnaan sesuai skor tiap area. & UI & Must & Planned \\ \hline
+TC-DSH-002 & REQ-F-042 & Memastikan tidak ada identitas individu yang ditampilkan pada dasbor publik. & Security & Must & Planned \\ \hline
+TC-RES-001 & REQ-F-050 & Memastikan halaman sumber daya menampilkan kontak resmi yang valid. & Functional & Should & Planned \\ \hline
+TC-MOD-001 & REQ-F-060 & Memastikan tim dapat meninjau dan memutuskan status laporan yang ditandai AI. & Functional & Should & Planned \\ \hline
+TC-SEC-001 & REQ-NF-120 & Memastikan sistem tidak menyimpan data identitas pribadi pelapor dalam bentuk apa pun. & Security & Must & Planned \\ \hline
+TC-SEC-002 & REQ-NF-121 & Memastikan tidak ada field atau fitur yang memungkinkan input nama/identitas terduga pelaku. & Security & Must & Planned \\ \hline
+\end{longtable}
+\normalsize
+
+\newpage
+
+\subsection*{D.2 Detail Test Case}
+Setiap test case berikut memuat precondition, langkah pengujian, hasil yang diharapkan (\textit{expected result}), dan kriteria lulus (\textit{pass criteria}). Status \textit{Planned} berarti test case belum dieksekusi; status akan diperbarui menjadi \textit{Pass}, \textit{Fail}, atau \textit{Blocked} setelah eksekusi pengujian dilakukan.
+
+\footnotesize
+
+\begin{longtable}{|L{2.6cm}|L{11.4cm}|}
+\hline
+\rowcolor{jsGray}\multicolumn{2}{|l|}{\textbf{TC-RPT-001 --- Anonymous Report Submission}} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\multicolumn{2}{|l|}{\textbf{TC-RPT-001 --- Anonymous Report Submission}} \\ \hline
+\endhead
+Req ID & REQ-F-001 \\ \hline
+Precondition & Pengguna membuka halaman lapor kejadian tanpa login/akun. \\ \hline
+Test Steps & 1) Buka halaman lapor kejadian. 2) Isi deskripsi, lokasi, dan waktu kejadian. 3) Kirim laporan. \\ \hline
+Expected Result & Laporan terkirim dan mendapat konfirmasi tanpa diminta membuat akun atau mengisi identitas pribadi. \\ \hline
+Pass Criteria & Laporan tersimpan di sistem tanpa satu pun field identitas pribadi terisi/wajib. \\ \hline
+\end{longtable}
+
+\begin{longtable}{|L{2.6cm}|L{11.4cm}|}
+\hline
+\rowcolor{jsGray}\multicolumn{2}{|l|}{\textbf{TC-RPT-002 --- Basic Input Validation}} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\multicolumn{2}{|l|}{\textbf{TC-RPT-002 --- Basic Input Validation}} \\ \hline
+\endhead
+Req ID & REQ-F-004 \\ \hline
+Precondition & Halaman lapor kejadian terbuka. \\ \hline
+Test Steps & 1) Kosongkan field deskripsi. 2) Isi lokasi saja. 3) Tekan tombol kirim. \\ \hline
+Expected Result & Sistem menolak pengiriman dan menampilkan pesan kesalahan yang jelas. \\ \hline
+Pass Criteria & Laporan dengan deskripsi kosong tidak tersimpan ke basis data. \\ \hline
+\end{longtable}
+
+\begin{longtable}{|L{2.6cm}|L{11.4cm}|}
+\hline
+\rowcolor{jsGray}\multicolumn{2}{|l|}{\textbf{TC-VER-001 --- Entity Extraction}} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\multicolumn{2}{|l|}{\textbf{TC-VER-001 --- Entity Extraction}} \\ \hline
+\endhead
+Req ID & REQ-F-010 \\ \hline
+Precondition & Laporan teks bebas berisi lokasi dan waktu tersedia sebagai input pengujian. \\ \hline
+Test Steps & 1) Kirim laporan berisi kalimat bebas, mis. ``Ada kejadian mencurigakan di dekat Jalan Kaliurang jam 2 pagi tadi.'' 2) Amati hasil ekstraksi AI. \\ \hline
+Expected Result & AI berhasil mengekstrak lokasi (``Jalan Kaliurang''), waktu (dini hari), dan jenis kejadian secara terstruktur. \\ \hline
+Pass Criteria & Ketiga entitas utama (lokasi, waktu, jenis kejadian) berhasil diekstrak dengan benar pada minimal 8 dari 10 contoh uji. \\ \hline
+\end{longtable}
+
+\begin{longtable}{|L{2.6cm}|L{11.4cm}|}
+\hline
+\rowcolor{jsGray}\multicolumn{2}{|l|}{\textbf{TC-VER-002 --- Embedding-Based Report Clustering}} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\multicolumn{2}{|l|}{\textbf{TC-VER-002 --- Embedding-Based Report Clustering}} \\ \hline
+\endhead
+Req ID & REQ-F-011 \\ \hline
+Precondition & Dua laporan berbeda dengan lokasi dan waktu berdekatan, ditulis dengan kalimat yang berbeda namun menggambarkan kejadian yang sama, telah dikirim. \\ \hline
+Test Steps & 1) Kirim laporan pertama tentang suatu kejadian. 2) Kirim laporan kedua dengan kalimat berbeda namun merujuk kejadian yang sama. 3) Periksa skor kemiripan vektor dan status klaster pada panel internal. \\ \hline
+Expected Result & Kedua laporan tergabung dalam satu klaster insiden berdasarkan skor kemiripan embedding di atas ambang batas, bukan tercatat sebagai dua kejadian terpisah. \\ \hline
+Pass Criteria & Sistem menampilkan kedua laporan sebagai satu insiden pada dasbor internal. \\ \hline
+\end{longtable}
+
+\begin{longtable}{|L{2.6cm}|L{11.4cm}|}
+\hline
+\rowcolor{jsGray}\multicolumn{2}{|l|}{\textbf{TC-VER-003 --- Embedding Storage}} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\multicolumn{2}{|l|}{\textbf{TC-VER-003 --- Embedding Storage}} \\ \hline
+\endhead
+Req ID & REQ-F-014 \\ \hline
+Precondition & Laporan baru telah berhasil diproses oleh Verification Agent. \\ \hline
+Test Steps & 1) Kirim laporan baru. 2) Periksa kolom pgvector pada tabel laporan di Supabase. 3) Jalankan kueri kemiripan vektor terhadap laporan tersebut. \\ \hline
+Expected Result & Embedding tersimpan dengan dimensi yang konsisten dan dapat dikueri untuk pencarian kemiripan. \\ \hline
+Pass Criteria & 100\% laporan yang berhasil diverifikasi memiliki embedding tersimpan tanpa nilai kosong/null. \\ \hline
+\end{longtable}
+
+\begin{longtable}{|L{2.6cm}|L{11.4cm}|}
+\hline
+\rowcolor{jsGray}\multicolumn{2}{|l|}{\textbf{TC-RSK-001 --- Area-Time Risk Scoring}} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\multicolumn{2}{|l|}{\textbf{TC-RSK-001 --- Area-Time Risk Scoring}} \\ \hline
+\endhead
+Req ID & REQ-F-020 \\ \hline
+Precondition & Seed data awal telah dimuat ke sistem. \\ \hline
+Test Steps & 1) Minta skor kerawanan untuk area dan jam tertentu yang diketahui rawan dari seed data. 2) Minta skor untuk area dan jam yang diketahui relatif aman. \\ \hline
+Expected Result & Area/jam yang diketahui rawan mendapat skor lebih tinggi dibanding area/jam yang relatif aman. \\ \hline
+Pass Criteria & Perbedaan skor antara area rawan dan area aman konsisten dengan pola pada seed data. \\ \hline
+\end{longtable}
+
+\begin{longtable}{|L{2.6cm}|L{11.4cm}|}
+\hline
+\rowcolor{jsGray}\multicolumn{2}{|l|}{\textbf{TC-RTE-001 --- Route Risk Check}} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\multicolumn{2}{|l|}{\textbf{TC-RTE-001 --- Route Risk Check}} \\ \hline
+\endhead
+Req ID & REQ-F-030 \\ \hline
+Precondition & Skor kerawanan untuk beberapa area telah tersedia. \\ \hline
+Test Steps & 1) Masukkan titik asal dan tujuan yang diketahui melintasi area berisiko tinggi pada jam tertentu. 2) Periksa hasil pemeriksaan rute. \\ \hline
+Expected Result & Sistem menandai rute tersebut sebagai berisiko tinggi. \\ \hline
+Pass Criteria & Rute yang melintasi area dengan skor kerawanan tinggi selalu ditandai sesuai levelnya, bukan ditampilkan sebagai aman. \\ \hline
+\end{longtable}
+
+\begin{longtable}{|L{2.6cm}|L{11.4cm}|}
+\hline
+\rowcolor{jsGray}\multicolumn{2}{|l|}{\textbf{TC-DSH-002 --- Non-Stigmatizing Presentation}} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\multicolumn{2}{|l|}{\textbf{TC-DSH-002 --- Non-Stigmatizing Presentation}} \\ \hline
+\endhead
+Req ID & REQ-F-042 \\ \hline
+Precondition & Dasbor publik telah menampilkan beberapa zona kerawanan. \\ \hline
+Test Steps & 1) Buka dasbor publik. 2) Periksa seluruh elemen antarmuka dan detail popup tiap zona. \\ \hline
+Expected Result & Tidak ditemukan nama, foto, atau identitas individu mana pun pada tampilan dasbor. \\ \hline
+Pass Criteria & Nol kemunculan elemen identifikasi individu pada seluruh halaman dasbor publik. \\ \hline
+\end{longtable}
+
+\begin{longtable}{|L{2.6cm}|L{11.4cm}|}
+\hline
+\rowcolor{jsGray}\multicolumn{2}{|l|}{\textbf{TC-SEC-001 --- Reporter Anonymity}} \\ \hline
+\endfirsthead
+\hline
+\rowcolor{jsGray}\multicolumn{2}{|l|}{\textbf{TC-SEC-001 --- Reporter Anonymity}} \\ \hline
+\endhead
+Req ID & REQ-NF-120 \\ \hline
+Precondition & Beberapa laporan telah dikirim ke sistem. \\ \hline
+Test Steps & 1) Periksa skema tabel Supabase untuk seluruh tabel terkait laporan. 2) Pastikan tidak ada kolom yang menyimpan nama, nomor telepon, atau akun media sosial pelapor. \\ \hline
+Expected Result & Tidak ditemukan kolom atau data identitas pribadi pelapor mana pun di basis data. \\ \hline
+Pass Criteria & Audit skema basis data menunjukkan nol field identitas pribadi pelapor. \\ \hline
+\end{longtable}
+
+\normalsize
+
+\end{document}

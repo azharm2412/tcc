@@ -1,0 +1,320 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-primary-hover: var(--primary-hover);
+  --color-risk-low: var(--risk-low);
+  --color-risk-medium: var(--risk-medium);
+  --color-risk-high: var(--risk-high);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-inter);
+  --shadow-glow: 0 0 40px color-mix(in srgb, var(--primary) 14%, transparent);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  /* Alias agar referensi Diayu & landing.tsx bisa pakai font-display + color-line via Tailwind */
+  --font-display: var(--font-inter);
+  --color-line: var(--border);
+  --color-ink: var(--background);
+  --color-panel: var(--surface);
+}
+
+/*
+ * Token warna Gardu (skill `gardu-design`, palet "Diayu"): "malam yang tenang
+ * tapi terjaga" — emerald di atas hitam-hijau, font Inter. Bukan tema
+ * terang/gelap yang bisa ditoggle, ini SATU tema dasar aplikasi. :root dan
+ * .dark disamakan agar tidak ada flash ke palet abu-abu default shadcn saat
+ * komponen memakai class `dark`. Token --risk-* TIDAK BOLEH diubah oleh
+ * token-swap.
+ */
+:root {
+  /* Beritahu browser halaman ini gelap, supaya kontrol native (ikon
+     kalender datetime-local, scrollbar, dst) dirender dengan warna
+     terang, bukan hitam-di-atas-hitam. */
+  color-scheme: dark;
+  --background: #060a08;
+  --foreground: #e8e6e1;
+  --surface: #0f1713;
+  --card: #0f1713;
+  --card-foreground: #e8e6e1;
+  --popover: #0f1713;
+  --popover-foreground: #e8e6e1;
+  --primary: #34d399; /* emerald-400 */
+  --primary-hover: #6ee7b7; /* emerald-300 */
+  --primary-foreground: #022c22; /* emerald-950 */
+  --secondary: #0f1713;
+  --secondary-foreground: #e8e6e1;
+  --muted: #13201a;
+  --muted-foreground: #9aa3b5;
+  --accent: #5eead4; /* teal-300 */
+  --accent-foreground: #042f2e; /* teal-950 */
+  --destructive: #b85c4c;
+  --destructive-foreground: #e8e6e1;
+  --border: rgba(148, 163, 184, 0.15);
+  --input: rgba(148, 163, 184, 0.15);
+  --ring: #34d399;
+  --risk-low: #4c8c6b;
+  --risk-medium: #d4a24c;
+  --risk-high: #b85c4c;
+  --chart-1: #34d399;
+  --chart-2: #5eead4;
+  --chart-3: #4c8c6b;
+  --chart-4: #d4a24c;
+  --chart-5: #b85c4c;
+  --radius: 0.5rem;
+  --sidebar: #060a08;
+  --sidebar-foreground: #e8e6e1;
+  --sidebar-primary: #34d399;
+  --sidebar-primary-foreground: #022c22;
+  --sidebar-accent: #0f1713;
+  --sidebar-accent-foreground: #e8e6e1;
+  --sidebar-border: rgba(148, 163, 184, 0.15);
+  --sidebar-ring: #34d399;
+}
+
+.dark {
+  --background: #060a08;
+  --foreground: #e8e6e1;
+  --surface: #0f1713;
+  --card: #0f1713;
+  --card-foreground: #e8e6e1;
+  --popover: #0f1713;
+  --popover-foreground: #e8e6e1;
+  --primary: #34d399;
+  --primary-hover: #6ee7b7;
+  --primary-foreground: #022c22;
+  --secondary: #0f1713;
+  --secondary-foreground: #e8e6e1;
+  --muted: #13201a;
+  --muted-foreground: #9aa3b5;
+  --accent: #5eead4;
+  --accent-foreground: #042f2e;
+  --destructive: #b85c4c;
+  --destructive-foreground: #e8e6e1;
+  --border: rgba(148, 163, 184, 0.15);
+  --input: rgba(148, 163, 184, 0.15);
+  --ring: #34d399;
+  --risk-low: #4c8c6b;
+  --risk-medium: #d4a24c;
+  --risk-high: #b85c4c;
+  --chart-1: #34d399;
+  --chart-2: #5eead4;
+  --chart-3: #4c8c6b;
+  --chart-4: #d4a24c;
+  --chart-5: #b85c4c;
+  --sidebar: #060a08;
+  --sidebar-foreground: #e8e6e1;
+  --sidebar-primary: #34d399;
+  --sidebar-primary-foreground: #022c22;
+  --sidebar-accent: #0f1713;
+  --sidebar-accent-foreground: #e8e6e1;
+  --sidebar-border: rgba(148, 163, 184, 0.15);
+  --sidebar-ring: #34d399;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-heading font-semibold tracking-tight;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--primary) 35%, transparent);
+    color: var(--foreground);
+  }
+}
+
+@layer components {
+  /* Lebar konten halaman (gaya referensi Diayu), dipetakan ke token. */
+  .container-x {
+    @apply mx-auto w-full max-w-7xl px-5 lg:px-8;
+  }
+
+  /* Panel semi-transparan bergaya kaca; radius mengikuti skill (bukan >1rem). */
+  .glass-card {
+    @apply rounded-lg border border-border bg-surface/70 backdrop-blur-xl;
+  }
+
+  /*
+   * Tombol primer — emerald, dipakai di landing hero dan CTA.
+   * hover: bg lebih terang (--primary-hover) + shadow glow.
+   * active: scale 0.98 agar terasa responsif.
+   */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3
+      text-sm font-semibold text-primary-foreground transition-all duration-300
+      hover:bg-primary-hover hover:shadow-glow active:scale-[0.98];
+  }
+
+  /*
+   * Tombol ghost — outline transparan, teks muted; dipakai CTA sekunder.
+   */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-border
+      px-6 py-3 text-sm font-semibold text-foreground transition-all duration-300
+      hover:border-primary/40 hover:text-primary active:scale-[0.98];
+  }
+
+  /*
+   * Gradient teks emerald→teal→emerald; dipakai h1 hero dan CTA.
+   */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent;
+  }
+
+  /*
+   * Input gelap bergaya gardu-design; dipakai form login admin.
+   */
+  .input {
+    @apply w-full rounded-lg border border-border bg-background/70 px-4 py-3 text-sm
+      text-foreground outline-none transition placeholder:text-muted-foreground
+      focus:border-primary/50 focus:ring-2 focus:ring-primary/20;
+  }
+
+  /*
+   * Lapisan grain/noise — opsional, dekoratif. pointer-events-none agar
+   * tidak mengganggu interaksi; opacity sangat rendah.
+   */
+  .noise-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 8px;
+  border: 2px solid var(--background);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ======================================================
+ * Animasi — gardu-design motion: tidak linear, easing halus.
+ * Dihormati oleh MotionConfig reducedMotion="user" di layout.
+ * ====================================================== */
+
+/* Scroll teks di marquee beranda — lambat & mulus */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+
+/* Melayang lambat elemen latar hero */
+@keyframes blob {
+  0%, 100% { transform: scale(1) translate(0, 0); }
+  33%       { transform: scale(1.06, 0.96) translate(12px, -10px); }
+  66%       { transform: scale(0.96, 1.04) translate(-8px, 12px); }
+}
+.animate-blob {
+  animation: blob 12s ease-in-out infinite;
+}
+
+/* Kartu status kawasan — melayang naik-turun */
+@keyframes floaty {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-6px); }
+}
+.animate-floaty {
+  animation: floaty 4s ease-in-out infinite;
+}
+
+/* ======================================================
+ * Popup Mapbox GL JS — override agar tampil gelap,
+ * selaras palet "malam" gardu-design.
+ * (beda dari maplibregl di referensi; class prefix berbeda)
+ * ====================================================== */
+.mapboxgl-popup-content {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5) !important;
+  color: var(--foreground) !important;
+  font-family: var(--font-sans) !important;
+}
+
+.mapboxgl-popup-tip {
+  border-top-color: var(--surface) !important;
+}
+
+/* Sembunyikan tombol close bawaan Mapbox (kita gunakan popup closeButton: false) */
+.gardu-popup .mapboxgl-popup-close-button {
+  display: none;
+}
+

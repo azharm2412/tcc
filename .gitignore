@@ -1,0 +1,34 @@
+# ===== PROJECT-SPECIFIC =====
+# File instruksi AI agent & referensi desain (tidak perlu di-push)
+.agents/
+.claude/
+CLAUDE.md
+_reference-ui-diayu/
+
+# ===== FRONTEND (Next.js) =====
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.env.local
+frontend/.env*.local
+
+# ===== BACKEND (Python / FastAPI) =====
+backend/.venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/**/*.py[cod]
+backend/.pytest_cache/
+backend/.coverage
+backend/htmlcov/
+backend/*.egg-info/
+# .env backend TIDAK diignore (dipakai untuk deploy); tambahkan manual kalau perlu
+
+# ===== OS & EDITOR =====
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+.idea/
+.vscode/
+*.suo
+*.user
