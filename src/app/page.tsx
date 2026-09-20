@@ -98,18 +98,36 @@ export default async function LandingPage() {
   console.log('SUPABASE DATA:', data);
   console.log('SUPABASE ERROR:', error);
 
-  const { count: verifiedReports } = await supabase
-    .from('reports')
-    .select('*', { count: 'exact', head: true })
-    .eq('status', 'terverifikasi');
+  const [
+    { count: totalReports, error: reportsError },
+    { data: riskRows, error: riskError },
+  ] = await Promise.all([
+    supabase
+      .from('reports')
+      .select('*', {
+        count: 'exact',
+        head: true,
+      }),
 
-  const { data: monitoredAreaRows } = await supabase
-    .from('risk_scores')
-    .select('area_name');
+    supabase
+      .from('risk_scores')
+      .select('area'),
+  ]);
+
+  console.log('TOTAL REPORTS:', totalReports);
+  console.log('RISK ROWS:', riskRows);
+  console.log('REPORT ERROR:', reportsError);
+  console.log('RISK ERROR:', riskError);
 
   const monitoredAreas = new Set(
-    monitoredAreaRows?.map((row) => row.area_name) ?? [],
+    (riskRows ?? [])
+      .map((row) => row.area)
+      .filter(Boolean),
   ).size;
+
+  console.log('MONITORED AREAS:', monitoredAreas);
+
+  const riskPredictions = riskRows?.length ?? 0;
 
   return (
     <div>
@@ -200,16 +218,16 @@ export default async function LandingPage() {
               <div className="mt-12 grid max-w-lg grid-cols-3 divide-x divide-line rounded-3xl border border-line bg-panel/50 backdrop-blur">
                 {[
                   {
-                    v: `${verifiedReports ?? 0}+`,
-                    l: 'Laporan terverifikasi',
+                    v: `${totalReports ?? 0}+`,
+                    l: 'Laporan total',
                   },
                   {
-                    v: String(monitoredAreas),
-                    l: 'Zona terpantau',
+                    v: `${monitoredAreas ?? 0}+`,
+                    l: 'Area terpantau',
                   },
                   {
-                    v: '3',
-                    l: 'AI Agent aktif',
+                    v: `${riskPredictions ?? 0}+`,
+                    l: 'Prediksi Risiko',
                   },
                 ].map((s) => (
                   <div key={s.l} className="px-5 py-4">

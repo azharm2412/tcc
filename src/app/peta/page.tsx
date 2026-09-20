@@ -430,7 +430,7 @@ export default function PetaPage() {
                       )
                     }
                     className={[
-                      'rounded-xl px-4 py-2 text-sm font-medium transition',
+                      'rounded-xl px-4 py-2 text-sm font-medium transition cursor-pointer',
 
                       active
                         ? 'bg-emerald-400 text-ink shadow-glow'
