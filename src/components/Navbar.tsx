@@ -158,7 +158,7 @@ export default function Navbar() {
               ${scrolled ? 'px-3 py-1.5' : 'px-4 py-2'}
             `}
           >
-            Moderasi
+            Laporan
           </Link>
         </div>
 
@@ -209,7 +209,7 @@ export default function Navbar() {
             className="overflow-hidden border-t border-line md:hidden"
           >
             <div className="space-y-1 px-4 py-3">
-              {[...LINKS, { href: '/laporan', label: 'Moderasi' }].map(
+              {[...LINKS, { href: '/laporan', label: 'Laporan' }].map(
                 (l, i) => (
                   <motion.div
                     key={l.href}
