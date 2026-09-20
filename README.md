@@ -4,8 +4,6 @@
 **Sistem Kesadaran Komunitas dan Rute Aman Warga terhadap Kejahatan Jalanan (Klitih) di Yogyakarta**
 
 [![Vercel](https://img.shields.io/badge/Vercel-Visit%20Live%20Site-A5B4FC?style=for-the-badge&logo=vercel&logoColor=white)](#)
-[![FastAPI](https://img.shields.io/badge/FastAPI-Backend%20API-009688?style=for-the-badge&logo=fastapi&logoColor=white)](#)
-[![Supabase](https://img.shields.io/badge/Supabase-Database-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](#)
 
 <p align="center">
   <a href="#gambaran-umum">Gambaran Umum</a> •
